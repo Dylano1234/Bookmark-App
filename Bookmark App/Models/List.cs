@@ -8,11 +8,11 @@ namespace Bookmark_App.Models
     {
         public int id { get; set; }
         public string title { get; set; }
-        public string coverImage { get; set; }
+        public byte[] coverImage { get; set; }
         public List<ListItem> listItems { get; set; } = new List<ListItem>();
         public int itemCount => listItems.Count;
 
-        public List(int id, string title, string coverImage)
+        public List(int id, string title, byte[] coverImage)
         {
             this.id = id;
             this.title = title;

@@ -26,22 +26,63 @@
             </Viewbox>
         </Border>
         <Border Grid.Row="1" MinHeight="60">
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <ItemsControl ItemsSource="{Binding Lists}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="3" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+            <Grid>
+                <!-- Lege-staat tekst -->
+                <TextBlock Text="Er zijn geen lijsten aanwezig. Druk op de plus-knop in de zijbalk."
+                           FontSize="18"
+                           Foreground="#AAAAAA"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="24">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <!-- standaard verborgen -->
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <!-- Als Lists.Count == 0 → tekst tonen -->
+                                <DataTrigger Binding="{Binding Lists.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <views:ListCardView/>
-                            <!-- jouw lijstkaart -->
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Viewbox>
+                <!-- Lijstweergave -->
+                <Viewbox Stretch="Uniform"
+                         StretchDirection="Both"
+                         VerticalAlignment="Top"
+                         HorizontalAlignment="Left">
+                    <ItemsControl ItemsSource="{Binding Lists}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <!-- standaard zichtbaar -->
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <!-- Als Lists.Count == 0 → lijst verbergen -->
+                                    <DataTrigger Binding="{Binding Lists.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:ListCardView/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Viewbox>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

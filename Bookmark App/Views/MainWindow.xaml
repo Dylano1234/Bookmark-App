@@ -15,45 +15,86 @@
             <views:HomeView />
         </DataTemplate>
     </Window.Resources>
+    <Grid>
+        <Grid Background="#222">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="80*"/>
+            </Grid.ColumnDefinitions>
 
-    <Grid Background="#222">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20*"/>
-            <ColumnDefinition Width="80*"/>
-        </Grid.ColumnDefinitions>
+            <!-- Sidebar -->
+            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <StackPanel Background="#222" Grid.Column="0">
+                    <Button Content="Home" 
+                    Background="#222" 
+                    Foreground="White"
+                    BorderBrush="#222"
+                    Margin="10,10,10,0"
+                    HorizontalContentAlignment="Left"/>
+                    <!-- lijstknoppen -->
+                    <ItemsControl ItemsSource="{Binding Lists}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-        <!-- Sidebar -->
-        <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <StackPanel Background="#222" Grid.Column="0">
-                <Button Content="Home" 
-                        Background="#222" 
-                        Foreground="White"
-                        BorderBrush="#222"
-                        Margin="10,10,10,0"
-                        HorizontalContentAlignment="Left"/>
-                <!-- lijstknoppen -->
-                <ItemsControl ItemsSource="{Binding Lists}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="1" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding title}" 
-                                    Background="#222" 
-                                    Foreground="White"
-                                    BorderBrush="#222"
-                                    Margin="10,10,10,0"
-                                    HorizontalContentAlignment="Left"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </Viewbox>
-        <!-- Dynamische content -->
-        <ContentControl Grid.Column="1"
-                        Content="{Binding CurrentViewModel}" />
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding title}" 
+                                Background="#222" 
+                                Foreground="White"
+                                BorderBrush="#222"
+                                Margin="10,5,10,0"
+                                HorizontalContentAlignment="Left"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{DynamicResource ButtonStyle1}" Content="+" 
+                    Background="#222" 
+                    Foreground="White"
+                    BorderBrush="#333"
+                    Margin="10,5,10,0"
+                    Width="20"
+                    Height="20"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    HorizontalAlignment="Left"
+                    FontSize="12"
+                    Command="{Binding OpenCreateListCommand}"/>
+                    <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
+                    BorderBrush="#222"
+                    Width="100"
+                    />
+                </StackPanel>
+            </Viewbox>
+            <!-- Dynamische content -->
+            <ContentControl Grid.Column="1"
+                    Content="{Binding CurrentViewModel}" />
+        </Grid>
+        <Grid Background="#80000000">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCreateListOpen}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
+                     Margin="50,50,50,50">
+                <Border Width="500"
+            Padding="20"
+            Background="#292929"
+            CornerRadius="12"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+                    <!-- Hier komt je 'Lijst aanmaken' view -->
+                    <views:CreateListView DataContext="{Binding CreateListViewModel}" />
+                </Border>
+            </Viewbox>
+        </Grid>
     </Grid>
 </Window>

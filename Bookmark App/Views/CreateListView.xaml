@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="Bookmark_App.Views.CreateListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Bookmark_App.Views"
+             xmlns:vm="clr-namespace:Bookmark_App.ViewModels"
+             xmlns:views="clr-namespace:Bookmark_App.Views"
+             mc:Ignorable="d" 
+             MinHeight="300"
+             MinWidth="500">
+    <StackPanel>
+        <!-- velden voor titel, cover, etc. -->
+        <TextBlock Text="Nieuwe lijst aanmaken"
+                   Foreground="White"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20" 
+                   HorizontalAlignment="Center"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                <TextBlock Text="Title:"
+                           Foreground="White"/>
+                <TextBox Width="100"
+                         Text="{Binding ListTitle, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <!-- Rechter kant: uploadvak -->
+            <StackPanel Grid.Column="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+
+                <!-- Vak met afbeelding of placeholder -->
+                <Border Width="200"
+        Height="260"
+        CornerRadius="12"
+        BorderBrush="#666"
+        BorderThickness="1"
+        Background="#333"
+        Margin="0,0,0,10">
+                    <Grid>
+                        <!-- Preview-image -->
+                        <Image Source="{Binding CoverPreview}"
+               Stretch="UniformToFill">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <!-- standaard zichtbaar -->
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <!-- Als CoverPreview null is → verbergen -->
+                                        <DataTrigger Binding="{Binding CoverPreview}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <!-- Placeholder -->
+                        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <!-- standaard verborgen -->
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <!-- Als CoverPreview null is → tonen -->
+                                        <DataTrigger Binding="{Binding CoverPreview}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+
+                            <TextBlock Text="Geen afbeelding geselecteerd"
+                       Foreground="#AAAAAA"
+                       TextAlignment="Center"
+                       Margin="0,0,0,4"/>
+                            <TextBlock Text="Klik op 'Upload afbeelding'"
+                       Foreground="#777"
+                       FontSize="11"
+                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Upload-knop -->
+                <Button Content="Upload Image"
+                    Command="{Binding SelectImageCommand}"
+                    Padding="12,4"
+                    HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
+            <Button Content="Cancel"
+                Margin="0,0,10,0"
+                Command="{Binding DataContext.CloseCreateListCommand,
+                                  RelativeSource={RelativeSource AncestorType=Window}}" />
+
+            <Button Content="Save"
+                Command="{Binding SaveListCommand}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>
