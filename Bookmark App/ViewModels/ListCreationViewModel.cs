@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class CreateListViewModel : BaseViewModel
+    public partial class ListCreationViewModel : BaseViewModel
     {
         private ImageSource? _coverPreview;
         private string? _listTitle;
@@ -42,7 +42,7 @@ namespace Bookmark_App.ViewModels
         public ICommand SelectImageCommand { get; }
         public ICommand SaveListCommand { get; }
 
-        public CreateListViewModel(MainViewModel mainViewModel)
+        public ListCreationViewModel(MainViewModel mainViewModel)
         {
             SelectImageCommand = new RelayCommand(SelectImage);
             SaveListCommand = new RelayCommand(SaveList, CanSave);

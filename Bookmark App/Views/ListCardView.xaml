@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Bookmark_App.Views"
+             xmlns:vm="clr-namespace:Bookmark_App.ViewModels"
              mc:Ignorable="d" 
              Height="180"
              Width="260">
@@ -25,8 +26,8 @@
             <Grid>
                 <!-- Donkere overlay onderaan met afgeronde onderhoeken -->
                 <Border Background="#80000000"
-            VerticalAlignment="Bottom"
-            CornerRadius="0,0,16,16">
+                        VerticalAlignment="Bottom"
+                        CornerRadius="0,0,16,16">
                     <Grid Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -34,20 +35,41 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding title}"
-                       Foreground="White"
-                       FontWeight="Bold"
-                       FontSize="16"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Bottom" />
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Bottom" />
 
                         <TextBlock Grid.Column="1"
-                       Text="{Binding itemCount, StringFormat='{}{0} items'}"
-                       Foreground="#DDDDDD"
-                       FontSize="12"
-                       VerticalAlignment="Bottom"
-                       Margin="12,0,0,0" />
+                                   Text="{Binding itemCount, StringFormat='{}{0} items'}"
+                                   Foreground="#DDDDDD"
+                                   FontSize="12"
+                                   VerticalAlignment="Bottom"
+                                   Margin="12,0,0,0" />
                     </Grid>
                 </Border>
+
+                <Button
+                    Command="{Binding DataContext.OpenListCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                    CommandParameter="{Binding}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Focusable="False"
+                    ToolTip="Open list"
+                    Cursor="Hand">        
+                    <Button.Template>
+                        <!-- Use a Border bound to the Button.Background so the control has a hit-testable area even when Background is Transparent -->
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    Cursor="{TemplateBinding Cursor}">
+                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
         </Border>
     </Border>

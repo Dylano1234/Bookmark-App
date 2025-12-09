@@ -14,6 +14,10 @@
         <DataTemplate DataType="{x:Type vm:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>
+        <!-- TEMPLATE: ListViewModel → ListView (ensures Title binding in ListView.xaml works) -->
+        <DataTemplate DataType="{x:Type vm:ListViewModel}">
+            <views:ListView />
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid Background="#222">
@@ -30,7 +34,8 @@
                     Foreground="White"
                     BorderBrush="#222"
                     Margin="10,10,10,0"
-                    HorizontalContentAlignment="Left"/>
+                    HorizontalContentAlignment="Left"
+                            Command="{Binding OpenHomeCommand}"/>
                     <!-- lijstknoppen -->
                     <ItemsControl ItemsSource="{Binding Lists}">
                         <ItemsControl.ItemsPanel>
@@ -46,7 +51,9 @@
                                 Foreground="White"
                                 BorderBrush="#222"
                                 Margin="10,5,10,0"
-                                HorizontalContentAlignment="Left"/>
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding DataContext.OpenListCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -92,7 +99,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
                     <!-- Hier komt je 'Lijst aanmaken' view -->
-                    <views:CreateListView DataContext="{Binding CreateListViewModel}" />
+                    <views:ListCreationView DataContext="{Binding ListCreationViewModel}" />
                 </Border>
             </Viewbox>
         </Grid>

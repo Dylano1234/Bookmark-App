@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace Bookmark_App.Views
 {
     /// <summary>
-    /// Interaction logic for CreateListView.xaml
+    /// Interaction logic for ListView.xaml
     /// </summary>
-    public partial class CreateListView : UserControl
+    public partial class ListView : UserControl
     {
-        public CreateListView()
+        public ListView()
         {
             InitializeComponent();
         }

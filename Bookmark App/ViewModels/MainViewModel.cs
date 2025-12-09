@@ -17,7 +17,7 @@ namespace Bookmark_App.ViewModels
 
         private readonly ListService _listService;
 
-        public CreateListViewModel CreateListViewModel { get; }
+        public ListCreationViewModel CreateListViewModel { get; }
 
         private bool _isCreateListOpen;
         public bool IsCreateListOpen
@@ -28,6 +28,8 @@ namespace Bookmark_App.ViewModels
 
         public ICommand OpenCreateListCommand { get; }
         public ICommand CloseCreateListCommand { get; }
+        public ICommand OpenListCommand { get; }
+        public ICommand OpenHomeCommand { get; }
 
         public ObservableCollection<List> Lists { get; } = new();
 
@@ -37,10 +39,12 @@ namespace Bookmark_App.ViewModels
             _listService = listService;
             LoadLists();
 
-            CreateListViewModel = new CreateListViewModel(this); // of via DI
+            CreateListViewModel = new ListCreationViewModel(this); // of via DI
 
             OpenCreateListCommand = new RelayCommand(OpenCreateList);
             CloseCreateListCommand = new RelayCommand(CloseCreateList);
+            OpenListCommand = new RelayCommand<List>(OpenList);
+            OpenHomeCommand = new RelayCommand(OpenHome);
 
             // Start op Home
 
@@ -65,6 +69,15 @@ namespace Bookmark_App.ViewModels
             {
                 homeVM.LoadLists();
             }
+        }
+        private void OpenList(List list)
+        {
+            if (list == null) return;
+            CurrentViewModel = new ListViewModel(list);
+        }
+        private void OpenHome()
+        {
+            CurrentViewModel = new HomeViewModel(_listService);
         }
     }
 }
