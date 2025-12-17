@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:Bookmark_App.ViewModels"
+             xmlns:m="clr-namespace:Bookmark_App.Models"
              xmlns:views="clr-namespace:Bookmark_App.Views" d:DataContext="{d:DesignInstance Type=vm:ListViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -11,86 +12,310 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="15*" 
                        MinHeight="60"/>
-            <RowDefinition Height="8*" 
+            <RowDefinition Height="10*" 
                            MinHeight="60"/>
-            <RowDefinition Height="77*" />
+            <RowDefinition Height="65*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Background="#292929" MinHeight="60">
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" Margin="0">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250*"/>
+                    <ColumnDefinition Width="30*"/>
+                    <ColumnDefinition Width="120*"/>
+                    <ColumnDefinition Width="180*"/>
+                    <ColumnDefinition Width="150*"/>
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="0"  Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <TextBlock Text="{Binding Title}"
-                   Foreground="White"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Left"
-                   Margin="10,0,0,0"/>
-                </StackPanel>
-            </Viewbox>
+                                   Foreground="White"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,0,0,5"
+                                   Grid.Column="0"/>
+                </Viewbox>
+                <Viewbox Grid.Column="1" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Button Content="+"
+                            Width="24"
+                            Height="24"
+                            Command="{Binding OpenCreateListItemCommand}"
+                            Margin="4,15,5,5"
+                            Background="#3A3A3A"
+                            Foreground="White"
+                            BorderBrush="#707070"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Cursor="Hand"
+                            ToolTip="Add new item to the list"
+                            FontSize="16">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="12"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    Cursor="{TemplateBinding Cursor}"
+                    BorderThickness="1">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Viewbox>
+                <Viewbox Grid.Column="2" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <ComboBox Width="120"
+                              Height="30"
+                              Margin="0,60,10,5"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right"
+                              FontSize="10"
+                              Foreground="Black"
+                              Background="#3A3A3A"
+                              BorderBrush="#707070"
+                              SelectedItem="{Binding SelectedGenreSortOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Genres}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}" 
+                                           Foreground="Black" 
+                                           FontSize="16" 
+                                           Padding="4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Viewbox>
+                <Viewbox Grid.Column="3" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <ComboBox Width="180"
+                              Height="30"
+                              Margin="10,60,10,5"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right"
+                              FontSize="10"
+                              Foreground="Black"
+                              Background="#3A3A3A"
+                              BorderBrush="#707070"
+                              SelectedItem="{Binding SelectedSortingOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding SortingOptions}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" 
+                           Foreground="Black" 
+                           FontSize="16" 
+                           Padding="4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Viewbox>
+                <Viewbox Grid.Column="4" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <TextBox x:Name="FilterTextBox" Width="150"
+                             Height="30"
+                             Margin="10,60,20,5"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                             FontSize="16"
+                             Foreground="White"
+                             Background="#3A3A3A"
+                             BorderBrush="#707070"
+                             Text="{Binding FilteringTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <!-- Pressing Enter while focused will execute SetFilteringTitleCommand with the current Text -->
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter"
+                                        Command="{Binding SetFilteringTitleCommand}"
+                                        CommandParameter="{Binding Text,
+                                       ElementName=FilterTextBox}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </Viewbox>
+            </Grid>
         </Border>
         <Border Grid.Row="1" MinHeight="60">
             <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
-                        <ColumnDefinition Width="20*"
-                                          MinWidth="100"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
+                        <ColumnDefinition Width="1*"
+                                          MinWidth="130"/>
                     </Grid.ColumnDefinitions>
+                    <!-- All -->
                     <Button Content="All"
-                        Background="MidnightBlue"
-                        Foreground="White"
-                        FontSize="20"
-                        BorderBrush="MidnightBlue"
-                        VerticalContentAlignment="Center"
-                            Grid.Column="0"/>
+                            Background="MidnightBlue"
+                            Foreground="White"
+                            FontSize="20"
+                            VerticalContentAlignment="Center"
+                            Grid.Column="0"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.All}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.All}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- In Progress -->
                     <Button Content="In Progress"
                             Background="Green"
                             Foreground="White"
                             FontSize="20"
-                            BorderBrush="Green"
                             VerticalContentAlignment="Center"
-                            Grid.Column="1"/>
+                            Grid.Column="1"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.InProgress}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.InProgress}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Completed -->
                     <Button Content="Completed"
                             Background="MidnightBlue"
                             Foreground="White"
                             FontSize="20"
-                            BorderBrush="MidnightBlue"
                             VerticalContentAlignment="Center"
-                            Grid.Column="2"/>
+                            Grid.Column="2"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.Completed}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.Completed}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- On Hold -->
                     <Button Content="On Hold"
                             Background="Orange"
                             Foreground="White"
                             FontSize="20"
-                            BorderBrush="Orange"
                             VerticalContentAlignment="Center"
-                            Grid.Column="3"/>
+                            Grid.Column="3"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.OnHold}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.OnHold}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Dropped -->
                     <Button Content="Dropped"
                             Background="DarkRed"
                             Foreground="White"
                             FontSize="20"
-                            BorderBrush="DarkRed"
                             VerticalContentAlignment="Center"
-                            Grid.Column="4"/>
+                            Grid.Column="4"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.Dropped}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.Dropped}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Planning -->
                     <Button Content="Planning"
                             Background="Gray"
                             Foreground="White"
                             FontSize="20"
-                            BorderBrush="Gray"
                             VerticalContentAlignment="Center"
-                            Grid.Column="5"/>
+                            Grid.Column="5"
+                            Command="{Binding SetStatusCommand}"
+                            CommandParameter="{x:Static m:ItemStatus.Planning}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static m:ItemStatus.Planning}">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </Grid>
             </Viewbox>
         </Border>
-        <Border Grid.Row="2" MinHeight="60">
+        <Border Grid.Row="2" MinHeight="60" Padding="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
+                <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
 
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <!-- vertical stacking so ScrollViewer handles vertical scrolling -->
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:ListItemCardView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>

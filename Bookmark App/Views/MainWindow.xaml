@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:Bookmark_App.ViewModels"
         xmlns:views="clr-namespace:Bookmark_App.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DataContext="{d:DesignInstance Type=vm:ListCreationViewModel}"
         mc:Ignorable="d"
         MinHeight="400"
         MinWidth="600">
@@ -58,7 +58,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <Button Style="{DynamicResource ButtonStyle1}" Content="+" 
-                    Background="#222" 
+                    Background="#333" 
                     Foreground="White"
                     BorderBrush="#333"
                     Margin="10,5,10,0"
@@ -99,7 +99,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
                     <!-- Hier komt je 'Lijst aanmaken' view -->
-                    <views:ListCreationView DataContext="{Binding ListCreationViewModel}" />
+                    <views:ListCreationView DataContext="{Binding CreateListViewModel}" />
                 </Border>
             </Viewbox>
         </Grid>

@@ -15,17 +15,29 @@ namespace Bookmark_App.DataAccess
             connection.Open();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT id, title, cover_image FROM lists ORDER BY title;";
+            // get lists with item counts (single query)
+            cmd.CommandText = @"
+SELECT l.id, l.title, l.cover_image, COUNT(i.id) as item_count
+FROM lists l
+LEFT JOIN items i ON i.list_id = l.id
+GROUP BY l.id
+ORDER BY l.title;
+";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                result.Add(new List
+                var list = new List
                 {
                     id = reader.GetInt32(0),
                     title = reader.GetString(1),
-                    coverImage = reader.IsDBNull(2) ? null : (byte[])reader["cover_image"]
-                });
+                    coverImage = reader.IsDBNull(2) ? null : (byte[])reader["cover_image"],
+                };
+
+                // set the cached count so UI can show it immediately
+                list.itemCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
+
+                result.Add(list);
             }
 
             return result;

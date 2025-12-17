@@ -1,7 +1,11 @@
 ﻿using Bookmark_App.Models;
+using Bookmark_App.Services;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Input;
 
@@ -11,18 +15,141 @@ namespace Bookmark_App.ViewModels
     {
         public Models.List _list;
         public string Title => _list.title;
-        public ItemStatus Status { get; set; }
+        private ItemStatus _status;
+        public ObservableCollection<Genre> Genres { get; set; } = new ObservableCollection<Genre>();
+        
+        private Genre? _selectedGenreSortOption;
+        public Genre? SelectedGenreSortOption
+        {
+            get => _selectedGenreSortOption;
+            set
+            {
+                if (_selectedGenreSortOption == value) return;
+                _selectedGenreSortOption = value;
+                OnPropertyChanged(nameof(SelectedGenreSortOption));
+                // trigger the command when selection changes
+                if (SetSelectedGenreSortOptionCommand?.CanExecute(value) == true)
+                    SetSelectedGenreSortOptionCommand.Execute(value);
+            }
+        }
+
+        public ObservableCollection<string> SortingOptions { get; set; } = new ObservableCollection<string>();
+
+        private string? _selectedSortingOption;
+        public string? SelectedSortingOption
+        {
+            get => _selectedSortingOption;
+            set
+            {
+                if (_selectedSortingOption == value) return;
+                _selectedSortingOption = value;
+                OnPropertyChanged(nameof(SelectedSortingOption));
+                // trigger the command when selection changes
+                if (SetSelectedSortingOptionCommand?.CanExecute(value) == true)
+                    SetSelectedSortingOptionCommand.Execute(value);
+            }
+        }
+        public string FilteringTitle { get; set; }
+
+        public ItemStatus Status
+        {
+            get => _status;
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
+                }
+            }
+        }
+
+        // Changed to ObservableCollection so UI updates when items change
+        public ObservableCollection<Models.ListItem> Items { get; } = new ObservableCollection<Models.ListItem>();
+
+        private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
+        private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
 
         public ICommand SetStatusCommand { get; }
+        public ICommand SetSelectedGenreSortOptionCommand { get; }
+        public ICommand SetSelectedSortingOptionCommand { get; }
+        public ICommand SetFilteringTitleCommand { get; }
+        public ICommand OpenCreateListItemCommand { get; }
+
         public ListViewModel(Models.List list)
         {
             _list = list;
             SetStatusCommand = new RelayCommand<ItemStatus>(SetStatus);
+            OpenCreateListItemCommand = new RelayCommand(OpenCreateListItem);
+            SetSelectedGenreSortOptionCommand = new RelayCommand<Genre>(SetSelectedGenreSortOption);
+            SetSelectedSortingOptionCommand = new RelayCommand<string>(SetSelectedSortingOption);
+            SetFilteringTitleCommand = new RelayCommand<string>(SetFilteringTitle);
+
+            SortingOptions.Add("Title Ascending");
+            SortingOptions.Add("Title Descending");
+            SortingOptions.Add("Rating Ascending");
+            SortingOptions.Add("Rating Descending");
+            SortingOptions.Add("Progress Ascending");
+            SortingOptions.Add("Progress Descending");
+            SelectedSortingOption = "Title Ascending";
+
+            Status = ItemStatus.All;
+
+            LoadGenres();
+            // initial load using current filter/sort values
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
         }
+
         private void SetStatus(ItemStatus status)
         {
             Status = status;
-            OnPropertyChanged(nameof(Status));
+            // reload items with current filters
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+        }
+
+        private void OpenCreateListItem()
+        {
+            // Implementation for opening the create list item view
+        }
+
+        private void LoadItems(List list, Genre genreFilter, string sort, string titleSearch, ItemStatus status)
+        {
+            Items.Clear();
+            foreach (var l in _itemService.GetAllItemsByList(list, genreFilter, sort, titleSearch, status))
+                Items.Add(l);
+        }
+
+        private void LoadGenres()
+        {
+            Genres.Clear();
+            Genres.Add(new Genre { id = -1, name = "All Genres" });
+            foreach (var g in _genreService.GetAllGenres())
+                Genres.Add(g);
+            if (SelectedGenreSortOption == null)
+            {
+                SelectedGenreSortOption = Genres[0]; // Select "All Genres" by default
+            }
+        }
+
+        private void SetSelectedGenreSortOption(Genre genre)
+        {
+            SelectedGenreSortOption = genre;
+            // reload items with new genre filter
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+        }
+
+        private void SetSelectedSortingOption(string sortingOption)
+        {
+            SelectedSortingOption = sortingOption;
+            // reload items with new sorting
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+        }
+
+        private void SetFilteringTitle(string title)
+        {
+            FilteringTitle = title;
+            // reload items with new title search
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
         }
     }
 }

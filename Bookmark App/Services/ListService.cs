@@ -19,7 +19,6 @@ namespace Bookmark_App.Services
 
         public List<List> GetAllLists()
         {
-            // eventueel lijst + item-count samenstellen
             return _listRepo.GetAll();
         }
         public List CreateList(string title, byte[]? coverImage)

@@ -10,6 +10,7 @@ namespace Bookmark_App.Models
         Completed,
         OnHold,
         Dropped,
-        Planning
+        Planning,
+        All
     }
 }
