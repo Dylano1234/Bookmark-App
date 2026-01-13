@@ -30,21 +30,21 @@
             </StackPanel>
             <!-- Rechter kant: uploadvak -->
             <StackPanel Grid.Column="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
 
                 <!-- Vak met afbeelding of placeholder -->
                 <Border Width="200"
-        Height="260"
-        CornerRadius="12"
-        BorderBrush="#666"
-        BorderThickness="1"
-        Background="#333"
-        Margin="0,0,0,10">
+                        Height="260"
+                        CornerRadius="12"
+                        BorderBrush="#666"
+                        BorderThickness="1"
+                        Background="#333"
+                        Margin="0,0,0,10">
                     <Grid>
                         <!-- Preview-image -->
                         <Image Source="{Binding CoverPreview}"
-               Stretch="UniformToFill">
+                                Stretch="UniformToFill">
                             <Image.Style>
                                 <Style TargetType="Image">
                                     <!-- standaard zichtbaar -->
@@ -75,11 +75,11 @@
                                 </Style>
                             </StackPanel.Style>
 
-                            <TextBlock Text="Geen afbeelding geselecteerd"
+                            <TextBlock Text="No image selected"
                        Foreground="#AAAAAA"
                        TextAlignment="Center"
                        Margin="0,0,0,4"/>
-                            <TextBlock Text="Klik op 'Upload afbeelding'"
+                            <TextBlock Text="Press 'Upload Image'"
                        Foreground="#777"
                        FontSize="11"
                        TextAlignment="Center"/>

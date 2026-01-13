@@ -28,7 +28,10 @@ namespace Bookmark_App.Services
                 title = title,
                 coverImage = coverImage
             };
-
+            if (coverImage != null)
+            {
+                list.coverImage = ImageService.ResizeImage(coverImage, 400, 300, 85);
+            }
             var newId = _listRepo.Insert(list);
             list.id = newId;
             return list;

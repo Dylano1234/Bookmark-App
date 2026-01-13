@@ -93,13 +93,35 @@
             <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
                      Margin="50,50,50,50">
                 <Border Width="500"
-            Padding="20"
-            Background="#292929"
-            CornerRadius="12"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-                    <!-- Hier komt je 'Lijst aanmaken' view -->
+                        Padding="20"
+                        Background="#292929"
+                        CornerRadius="12"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
                     <views:ListCreationView DataContext="{Binding CreateListViewModel}" />
+                </Border>
+            </Viewbox>
+        </Grid>
+        <Grid Background="#80000000">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsListItemDetailViewOpen}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
+                     Margin="50,50,50,50">
+                <Border Width="600"
+                        Padding="20"
+                        Background="#292929"
+                        CornerRadius="12"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <views:ListItemDetailView DataContext="{Binding ListItemDetailViewModel}" />
                 </Border>
             </Viewbox>
         </Grid>

@@ -12,7 +12,7 @@ namespace Bookmark_App.DataAccess
             using var connection = new Microsoft.Data.Sqlite.SqliteConnection(DbConfig.ConnectionString);
             connection.Open();
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT id, name FROM genres ORDER BY name;";
+            cmd.CommandText = "SELECT id, name FROM genres;";
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {

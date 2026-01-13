@@ -13,7 +13,17 @@ namespace Bookmark_App.Models
         public int id { get; set; }
         public string title { get; set; }
         public string url { get; set; }
-        public byte[] coverImage { get; set; }
+        private byte[] _coverImage;
+        public byte[] coverImage 
+        {   
+            get => _coverImage;
+            set 
+            {
+                if (_coverImage == value) return;
+                _coverImage = value;
+                OnPropertyChanged(nameof(coverImage));
+            }
+        }
         public ItemStatus status { get; set; }
 
         // use backing fields so we can react to changes

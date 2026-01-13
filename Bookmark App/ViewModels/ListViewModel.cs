@@ -63,6 +63,34 @@ namespace Bookmark_App.ViewModels
                 }
             }
         }
+        private int? _currentPage;
+        public int? CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (_currentPage != value)
+                {
+                    _currentPage = value;
+                    OnPropertyChanged(nameof(CurrentPage));
+                }
+            }
+        }
+        private int? _totalPages;
+        public int? TotalPages
+        {
+            get => _totalPages;
+            set
+            {
+                if (_totalPages != value)
+                {
+                    _totalPages = value;
+                    OnPropertyChanged(nameof(TotalPages));
+                }
+            }
+        }
+        public int ItemsPerPage { get; set; } = 20;
+
 
         // Changed to ObservableCollection so UI updates when items change
         public ObservableCollection<Models.ListItem> Items { get; } = new ObservableCollection<Models.ListItem>();
@@ -75,15 +103,24 @@ namespace Bookmark_App.ViewModels
         public ICommand SetSelectedSortingOptionCommand { get; }
         public ICommand SetFilteringTitleCommand { get; }
         public ICommand OpenCreateListItemCommand { get; }
+        public ICommand FirstPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand LastPageCommand { get; }
 
         public ListViewModel(Models.List list)
         {
+            CurrentPage = 1;
             _list = list;
             SetStatusCommand = new RelayCommand<ItemStatus>(SetStatus);
             OpenCreateListItemCommand = new RelayCommand(OpenCreateListItem);
             SetSelectedGenreSortOptionCommand = new RelayCommand<Genre>(SetSelectedGenreSortOption);
             SetSelectedSortingOptionCommand = new RelayCommand<string>(SetSelectedSortingOption);
             SetFilteringTitleCommand = new RelayCommand<string>(SetFilteringTitle);
+            FirstPageCommand = new RelayCommand(FirstPage);
+            PreviousPageCommand = new RelayCommand(PreviousPage);
+            NextPageCommand = new RelayCommand(NextPage);
+            LastPageCommand = new RelayCommand(LastPage);
 
             SortingOptions.Add("Title Ascending");
             SortingOptions.Add("Title Descending");
@@ -94,17 +131,19 @@ namespace Bookmark_App.ViewModels
             SelectedSortingOption = "Title Ascending";
 
             Status = ItemStatus.All;
+            
 
             LoadGenres();
             // initial load using current filter/sort values
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
 
         private void SetStatus(ItemStatus status)
         {
+            ResetCurrentPage();
             Status = status;
             // reload items with current filters
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
 
         private void OpenCreateListItem()
@@ -112,11 +151,12 @@ namespace Bookmark_App.ViewModels
             // Implementation for opening the create list item view
         }
 
-        private void LoadItems(List list, Genre genreFilter, string sort, string titleSearch, ItemStatus status)
+        public void LoadItems(List list, Genre genreFilter, string sort, string titleSearch, ItemStatus status, int itemsPerPage, int currentPage)
         {
             Items.Clear();
-            foreach (var l in _itemService.GetAllItemsByList(list, genreFilter, sort, titleSearch, status))
+            foreach (var l in _itemService.GetAllItemsByList(list, genreFilter, sort, titleSearch, status, itemsPerPage, currentPage))
                 Items.Add(l);
+            LoadPageNumbers();
         }
 
         private void LoadGenres()
@@ -133,23 +173,61 @@ namespace Bookmark_App.ViewModels
 
         private void SetSelectedGenreSortOption(Genre genre)
         {
+            ResetCurrentPage();
             SelectedGenreSortOption = genre;
             // reload items with new genre filter
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
 
         private void SetSelectedSortingOption(string sortingOption)
         {
             SelectedSortingOption = sortingOption;
             // reload items with new sorting
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
 
         private void SetFilteringTitle(string title)
         {
+            ResetCurrentPage();
             FilteringTitle = title;
             // reload items with new title search
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status);
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+        }
+        private void FirstPage()
+        {
+            CurrentPage = 1;
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+        }
+        private void PreviousPage()
+        {
+            if (CurrentPage == 1)
+            {
+                return;
+            }
+            CurrentPage--;
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+        }
+        private void NextPage()
+        {
+            if (CurrentPage >= TotalPages)
+            {
+                return;
+            }
+            CurrentPage++;
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+        }
+        private void LastPage()
+        {
+            CurrentPage = TotalPages;
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+        }
+        private void LoadPageNumbers()
+        {
+            TotalPages = _itemService.GetItemCount(_list, SelectedGenreSortOption, FilteringTitle, Status) / ItemsPerPage + 1;
+        }
+        private void ResetCurrentPage()
+        {
+            CurrentPage = 1;
         }
     }
 }
