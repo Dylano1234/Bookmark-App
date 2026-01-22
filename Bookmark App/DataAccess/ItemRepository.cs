@@ -79,11 +79,11 @@ namespace Bookmark_App.DataAccess
                 using var idCmd = connection.CreateCommand();
                 var idSb = new StringBuilder();
                 idSb.AppendLine(@"
-SELECT DISTINCT i.id
-FROM items i
-LEFT JOIN item_genres ig ON ig.item_id = i.id
-LEFT JOIN genres g       ON g.id = ig.genre_id
-");
+                                SELECT DISTINCT i.id
+                                FROM items i
+                                LEFT JOIN item_genres ig ON ig.item_id = i.id
+                                LEFT JOIN genres g       ON g.id = ig.genre_id
+                                ");
                 idSb.Append(whereSb.ToString());
                 idSb.AppendLine($"ORDER BY {orderBy}, g.name");
                 idSb.AppendLine("LIMIT $Limit OFFSET $Offset;");
@@ -379,7 +379,7 @@ SELECT last_insert_rowid();
                     cmd.Parameters.AddWithValue("$status", (int)listItem.status);
                     cmd.Parameters.AddWithValue("$progressCurrent", listItem.progressCurrent);
                     cmd.Parameters.AddWithValue("$progressMax", listItem.progressMax);
-                    cmd.Parameters.AddWithValue("$rating", listItem.rating);
+                    cmd.Parameters.AddWithValue("$rating", (object?)listItem.rating ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("$url", (object?)listItem.url ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("$coverImage", (object?)listItem.coverImage ?? DBNull.Value);
 

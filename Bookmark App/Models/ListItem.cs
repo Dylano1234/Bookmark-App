@@ -11,10 +11,10 @@ namespace Bookmark_App.Models
     public class ListItem : INotifyPropertyChanged
     {
         public int id { get; set; }
-        public string title { get; set; }
-        public string url { get; set; }
-        private byte[] _coverImage;
-        public byte[] coverImage 
+        public string? title { get; set; }
+        public string? url { get; set; }
+        private byte[]? _coverImage;
+        public byte[]? coverImage 
         {   
             get => _coverImage;
             set 
@@ -53,7 +53,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        public double rating { get; set; }
+        public double? rating { get; set; }
 
         // ObservableCollection so changes after construction are observed
         private ObservableCollection<Genre> _genres = new ObservableCollection<Genre>();
@@ -72,8 +72,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private string _genresText;
-        public string GenresText
+        private string? _genresText;
+        public string? GenresText
         {
             get => _genresText;
             private set
@@ -84,8 +84,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private string _progressText;
-        public string ProgressText
+        private string? _progressText;
+        public string? ProgressText
         {
             get => _progressText;
             private set

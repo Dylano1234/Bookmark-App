@@ -17,12 +17,12 @@ namespace Bookmark_App.DataAccess
             using var cmd = connection.CreateCommand();
             // get lists with item counts (single query)
             cmd.CommandText = @"
-SELECT l.id, l.title, l.cover_image, COUNT(i.id) as item_count
-FROM lists l
-LEFT JOIN items i ON i.list_id = l.id
-GROUP BY l.id
-ORDER BY l.title;
-";
+                                SELECT l.id, l.title, l.cover_image, COUNT(i.id) as item_count
+                                FROM lists l
+                                LEFT JOIN items i ON i.list_id = l.id
+                                GROUP BY l.id
+                                ORDER BY l.title;
+                                ";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -50,10 +50,10 @@ ORDER BY l.title;
 
             using var cmd = connection.CreateCommand();
             cmd.CommandText = @"
-            INSERT INTO lists (title, cover_image)
-            VALUES ($title, $coverImage);
-            SELECT last_insert_rowid();
-        ";
+                                INSERT INTO lists (title, cover_image)
+                                VALUES ($title, $coverImage);
+                                SELECT last_insert_rowid();
+                                ";
 
             cmd.Parameters.AddWithValue("$title", list.title);
             cmd.Parameters.AddWithValue("$coverImage", (object?)list.coverImage ?? DBNull.Value);
@@ -62,6 +62,39 @@ ORDER BY l.title;
             return (int)newId;
         }
 
-        // Update/Delete komen hier later ook
+        public void Update(List list, string title, byte[]? coverImage)
+        {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("title must not be null or whitespace", nameof(title));
+
+            using var connection = new SqliteConnection(DbConfig.ConnectionString);
+            connection.Open();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+                                UPDATE lists
+                                SET title = $title,
+                                    cover_image = $coverImage
+                                WHERE id = $id;
+                                ";
+            cmd.Parameters.AddWithValue("$title", title);
+            cmd.Parameters.AddWithValue("$coverImage", (object?)coverImage ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("$id", list.id);
+
+            cmd.ExecuteNonQuery();
+        }
+        public void Delete(List list)
+        {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            using var connection = new SqliteConnection(DbConfig.ConnectionString);
+            connection.Open();
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+                                DELETE FROM lists
+                                WHERE id = $id;
+                                ";
+            cmd.Parameters.AddWithValue("$id", list.id);
+            cmd.ExecuteNonQuery();
+        }
     }
 }

@@ -5,6 +5,7 @@
         xmlns:views="clr-namespace:Bookmark_App.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DataContext="{d:DesignInstance Type=vm:ListCreationViewModel}"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         MinHeight="400"
         MinWidth="600">
@@ -18,7 +19,11 @@
         <DataTemplate DataType="{x:Type vm:ListViewModel}">
             <views:ListView />
         </DataTemplate>
+        <System:Boolean x:Key="FalseValue">False</System:Boolean>
+        <System:Boolean x:Key="TrueValue">True</System:Boolean>
     </Window.Resources>
+    
+
     <Grid>
         <Grid Background="#222">
             <Grid.ColumnDefinitions>
@@ -68,7 +73,8 @@
                     VerticalContentAlignment="Center"
                     HorizontalAlignment="Left"
                     FontSize="12"
-                    Command="{Binding OpenCreateListCommand}"/>
+                    Command="{Binding OpenCreateListCommand}"
+                    CommandParameter="{StaticResource TrueValue}"/>
                     <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
                     BorderBrush="#222"
                     Width="100"

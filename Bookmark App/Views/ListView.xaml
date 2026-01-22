@@ -111,24 +111,41 @@
                     </ComboBox>
                 </Viewbox>
                 <Viewbox Grid.Column="4" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <TextBox x:Name="FilterTextBox" Width="150"
-                             Height="30"
-                             Margin="10,60,20,5"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Right"
-                             FontSize="16"
-                             Foreground="White"
-                             Background="#3A3A3A"
-                             BorderBrush="#707070"
-                             Text="{Binding FilteringTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <!-- Pressing Enter while focused will execute SetFilteringTitleCommand with the current Text -->
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter"
-                                        Command="{Binding SetFilteringTitleCommand}"
-                                        CommandParameter="{Binding Text,
-                                       ElementName=FilterTextBox}"/>
-                        </TextBox.InputBindings>
-                    </TextBox>
+                    <Grid>
+                        <TextBox x:Name="FilterTextBox" Width="150"
+                                 Height="30"
+                                 Margin="10,60,20,5"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Right"
+                                 FontSize="16"
+                                 Foreground="White"
+                                 Background="#3A3A3A"
+                                 BorderBrush="#707070"
+                                 Text="{Binding FilteringTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <!-- Pressing Enter while focused will execute SetFilteringTitleCommand with the current Text -->
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding SetFilteringTitleCommand}"
+                                            CommandParameter="{Binding Text,
+                                           ElementName=FilterTextBox}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <TextBlock Text="Search by Title"
+                                   Foreground="Gray"
+                                   Margin="15,65,20,5"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                 </Viewbox>
             </Grid>
         </Border>
@@ -291,31 +308,52 @@
         </Border>
         <Border Grid.Row="2" MinHeight="60" Margin="8,0,8,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
-                <ItemsControl ItemsSource="{Binding Items}">
-                    <ItemsControl.Style>
-                        <Style TargetType="ItemsControl">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Items.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ItemsControl.Style>
+                <!-- Use a Grid to show either the ItemsControl or a 'No Items found' message -->
+                <Grid>
+                    <ItemsControl ItemsSource="{Binding Items}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <!-- vertical stacking so ScrollViewer handles vertical scrolling -->
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!-- vertical stacking so ScrollViewer handles vertical scrolling -->
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <views:ListItemCardView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:ListItemCardView />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Shown when there are no items -->
+                    <TextBlock Text="No Items found"
+                               Foreground="Gray"
+                               FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
             </ScrollViewer>
         </Border>
         <Border Grid.Row="3" MinHeight="20">

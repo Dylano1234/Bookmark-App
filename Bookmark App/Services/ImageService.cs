@@ -14,7 +14,7 @@ namespace Bookmark_App.Services
         byte[] originalBytes,
         int maxWidth,
         int maxHeight,
-        int jpegQuality = 85)
+        int jpegQuality = 90)
         {
             using var inputStream = new MemoryStream(originalBytes);
 

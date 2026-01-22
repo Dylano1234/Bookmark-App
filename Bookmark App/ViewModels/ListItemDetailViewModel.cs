@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -93,6 +94,7 @@ namespace Bookmark_App.ViewModels
         public ICommand SaveListItemCommand { get; }
         public ICommand SelectImageCommand { get; }
         public ICommand DeleteListItemCommand { get; }
+        public ICommand RemoveImageCommand { get; }
 
         private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
         private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
@@ -101,6 +103,7 @@ namespace Bookmark_App.ViewModels
             SaveListItemCommand = new RelayCommand(SaveListItem);
             SelectImageCommand = new RelayCommand(SelectImage);
             DeleteListItemCommand = new RelayCommand(DeleteListItem);
+            RemoveImageCommand = new RelayCommand(RemoveImage);
 
             MainViewModel = mainViewModel;
 
@@ -109,12 +112,19 @@ namespace Bookmark_App.ViewModels
         private void SaveListItem()
         {
             if (CurrentListItem == null) return;
+            
 
             CurrentListItem.genres.Clear();
             if (Genre1 != null) CurrentListItem.genres.Add(Genre1);
             if (Genre2 != null) CurrentListItem.genres.Add(Genre2);
             if (Genre3 != null) CurrentListItem.genres.Add(Genre3);
             if (Genre4 != null) CurrentListItem.genres.Add(Genre4);
+
+            if(ItemValidation())
+            {
+                return;
+            }
+
             if (IsEditMode && !IsNewItem)
             {
                 _itemService.UpdateItem(CurrentListItem);
@@ -126,11 +136,24 @@ namespace Bookmark_App.ViewModels
                 _itemService.AddItem(CurrentListItem, (int)CurrentListid);
                 MainViewModel.CloseListItemDetailView();
             }
+            ResetGenres();
         }
         private void DeleteListItem()
         {
             if (!IsNewItem && CurrentListItem != null)
             {
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this item?",
+                    "Delete Item",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+                );
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
                 _itemService.DeleteItem(CurrentListItem);
                 MainViewModel.CloseListItemDetailView();
             }
@@ -149,15 +172,15 @@ namespace Bookmark_App.ViewModels
                 var bytes = File.ReadAllBytes(dlg.FileName);
                 CoverImageData = bytes;
 
-                //var bmp = new BitmapImage();
-                //using (var ms = new MemoryStream(bytes))
-                //{
-                //    bmp.BeginInit();
-                //    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                //    bmp.StreamSource = ms;
-                //    bmp.EndInit();
-                //    bmp.Freeze();
-                //}
+                var bmp = new BitmapImage();
+                using (var ms = new MemoryStream(bytes))
+                {
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.StreamSource = ms;
+                    bmp.EndInit();
+                    bmp.Freeze();
+                }
 
                 if (CurrentListItem != null)
                     CurrentListItem.coverImage = CoverImageData;
@@ -168,6 +191,52 @@ namespace Bookmark_App.ViewModels
             Genres.Clear();
             foreach (var g in _genreService.GetAllGenres())
                 Genres.Add(g);
+        }
+        public void ResetGenres()
+        {
+            Genre1 = null;
+            Genre2 = null;
+            Genre3 = null;
+            Genre4 = null;
+        }
+        private bool ItemValidation()
+        {
+            bool hasErrors = false;
+            string errorMessage = "Please correct the following errors:\n";
+            bool hasDuplicate = CurrentListItem.genres
+                .GroupBy(g => g.id)
+                .Any(group => group.Count() > 1);
+
+            if (string.IsNullOrWhiteSpace(CurrentListItem.title))
+            {
+                hasErrors = true;
+                errorMessage += "- Title is required.\n";
+            }
+            if (CurrentListItem.rating != 0 &&
+               (CurrentListItem.rating < 1 || CurrentListItem.rating > 10))
+            {
+                hasErrors = true;
+                errorMessage += "- Rating must either be 0 or between 1 and 10.\n";
+            }
+            if (hasDuplicate)
+            {
+                hasErrors = true;
+                errorMessage += "- Duplicate genres selected.\n";
+            }
+
+            if (hasErrors)
+            {
+                MessageBox.Show(errorMessage, "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return hasErrors;
+        }
+        private void RemoveImage() 
+        { 
+            CoverImageData = null;
+            if (CurrentListItem != null)
+            {
+                CurrentListItem.coverImage = null;
+            }
         }
     }
 }

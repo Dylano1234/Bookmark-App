@@ -17,7 +17,7 @@ namespace Bookmark_App.ViewModels
         public string Title => _list.title;
         private ItemStatus _status;
         public ObservableCollection<Genre> Genres { get; set; } = new ObservableCollection<Genre>();
-        
+
         private Genre? _selectedGenreSortOption;
         public Genre? SelectedGenreSortOption
         {
@@ -107,6 +107,7 @@ namespace Bookmark_App.ViewModels
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand LastPageCommand { get; }
+        public ICommand IncrementProgressCommand { get; }
 
         public ListViewModel(Models.List list)
         {
@@ -121,6 +122,7 @@ namespace Bookmark_App.ViewModels
             PreviousPageCommand = new RelayCommand(PreviousPage);
             NextPageCommand = new RelayCommand(NextPage);
             LastPageCommand = new RelayCommand(LastPage);
+            IncrementProgressCommand = new RelayCommand<Models.ListItem>(IncrementProgress);
 
             SortingOptions.Add("Title Ascending");
             SortingOptions.Add("Title Descending");
@@ -131,7 +133,7 @@ namespace Bookmark_App.ViewModels
             SelectedSortingOption = "Title Ascending";
 
             Status = ItemStatus.All;
-            
+
 
             LoadGenres();
             // initial load using current filter/sort values
@@ -190,6 +192,7 @@ namespace Bookmark_App.ViewModels
         {
             ResetCurrentPage();
             FilteringTitle = title;
+            FilteringTitle = FilteringTitle.Trim();
             // reload items with new title search
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
@@ -228,6 +231,22 @@ namespace Bookmark_App.ViewModels
         private void ResetCurrentPage()
         {
             CurrentPage = 1;
+        }
+        private void IncrementProgress(Models.ListItem item)
+        {
+            if (item.progressCurrent < item.progressMax)
+            {
+                item.progressCurrent++;
+                _itemService.UpdateItem(item);
+                LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            }
+            else if (item.progressCurrent == item.progressMax)
+            {
+                item.progressCurrent++;
+                item.progressMax++;
+                _itemService.UpdateItem(item);
+                LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            }
         }
     }
 }

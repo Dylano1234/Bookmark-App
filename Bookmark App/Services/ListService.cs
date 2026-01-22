@@ -36,5 +36,19 @@ namespace Bookmark_App.Services
             list.id = newId;
             return list;
         }
+        public void UpdateList(List list, string title, byte[]? coverImage)
+        {
+            if (coverImage != null)
+            {
+                coverImage = ImageService.ResizeImage(coverImage, 400, 300, 85);
+            }
+            _listRepo.Update(list, title, coverImage);
+            list.title = title;
+            list.coverImage = coverImage;
+        }
+        public void DeleteList(List list)
+        {
+            _listRepo.Delete(list);
+        }
     }
 }

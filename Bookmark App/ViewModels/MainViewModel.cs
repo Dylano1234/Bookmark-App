@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
 {
@@ -44,6 +46,7 @@ namespace Bookmark_App.ViewModels
         public ICommand OpenListCommand { get; }
         public ICommand OpenHomeCommand { get; }
         public ICommand OpenUrlCommand { get; }
+        public ICommand OpenEditListCommand { get; }
 
         public ObservableCollection<List> Lists { get; } = new();
 
@@ -65,6 +68,8 @@ namespace Bookmark_App.ViewModels
             OpenListItemDetailViewEditCommand = new RelayCommand(OpenListItemDetailViewEdit);
             OpenListItemDetailViewCommand = new RelayCommand<ListItem>(OpenListItemDetailView);
             CloseListItemDetailViewCommand = new RelayCommand(CloseListItemDetailView);
+            OpenEditListCommand = new RelayCommand<List>(OpenEditList);
+
 
             // Start op Home
 
@@ -79,6 +84,9 @@ namespace Bookmark_App.ViewModels
         }
         private void OpenCreateList()
         {
+            CreateListViewModel.IsNewList = true;
+            CreateListViewModel.WindowTitle = "Create New List";
+            CreateListViewModel.CurrentList = null;
             IsCreateListOpen = true;
         }
 
@@ -89,6 +97,10 @@ namespace Bookmark_App.ViewModels
             {
                 homeVM.LoadLists();
             }
+            CreateListViewModel.CurrentList = null;
+            CreateListViewModel.CoverImageData = null;
+            CreateListViewModel.CoverPreview = null;
+            CreateListViewModel.ListTitle = string.Empty;
         }
         private void OpenList(List list)
         {
@@ -177,6 +189,29 @@ namespace Bookmark_App.ViewModels
             {
                 listVM.LoadItems(listVM._list, listVM.SelectedGenreSortOption, listVM.SelectedSortingOption, listVM.FilteringTitle, listVM.Status, listVM.ItemsPerPage, (int)listVM.CurrentPage);
             }
+            ListItemDetailViewModel.ResetGenres();
+        }
+        private void OpenEditList(Models.List currentList)
+        {
+            CreateListViewModel.IsNewList = false;
+            CreateListViewModel.WindowTitle = "Edit List";
+            CreateListViewModel.CurrentList = currentList;
+            CreateListViewModel.ListTitle = currentList.title;
+            CreateListViewModel.CoverImageData = currentList.coverImage;
+            if (currentList.coverImage != null)
+            {
+                var bmp = new BitmapImage();
+                using (var ms = new MemoryStream(currentList.coverImage))
+                {
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.StreamSource = ms;
+                    bmp.EndInit();
+                    bmp.Freeze();
+                }
+                CreateListViewModel.CoverPreview = bmp;
+            }
+            IsCreateListOpen = true;
         }
     }
 }

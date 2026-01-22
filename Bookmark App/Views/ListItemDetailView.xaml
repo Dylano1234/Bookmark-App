@@ -137,24 +137,39 @@
                     </Border>
                 </StackPanel>
             </Grid>
-
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" >
-                <TextBox Width="100"
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                    <TextBlock Text="Genres:"
+                               Foreground="White"
+                               Margin="0,0,0,0"/>
+                    <TextBox Width="120"
+                             Height="25"
+                             FontSize="14"
                         Text="{Binding CurrentListItem.genres[0].name, UpdateSourceTrigger=PropertyChanged}" 
                         IsReadOnly="True"
-                        Margin="0,0,20,0"/>
-                <TextBox Width="100"
+                        Margin="0,0,10,0"/>
+                </StackPanel>
+                <TextBox Width="120"
+                         Height="25"
+                         VerticalAlignment="Bottom"
+                         FontSize="14"
                         Text="{Binding CurrentListItem.genres[1].name, UpdateSourceTrigger=PropertyChanged}" 
                         IsReadOnly="True"
-                        Margin="0,0,20,0"/>
-                <TextBox Width="100"
+                        Margin="0,0,10,0"/>
+                <TextBox Width="120"
+                         Height="25"
+                         VerticalAlignment="Bottom"
+                         FontSize="14"
                         Text="{Binding CurrentListItem.genres[2].name, UpdateSourceTrigger=PropertyChanged}" 
                         IsReadOnly="True"
-                        Margin="0,0,20,0"/>
-                <TextBox Width="100"
+                        Margin="0,0,10,0"/>
+                <TextBox Width="120"
+                         Height="25"
+                         VerticalAlignment="Bottom"
+                         FontSize="14"
                         Text="{Binding CurrentListItem.genres[3].name, UpdateSourceTrigger=PropertyChanged}" 
                         IsReadOnly="True"
-                        Margin="0,0,20,0"/>
+                        Margin="0,0,10,0"/>
             </StackPanel>
         </Grid>
 
@@ -193,12 +208,12 @@
                     <TextBlock Text="Current Progress:"
                                 Foreground="White"/>
                     <TextBox Width="130"
-                             Text="{Binding CurrentListItem.progressCurrent, UpdateSourceTrigger=PropertyChanged}" 
+                             Text="{Binding CurrentListItem.progressCurrent, UpdateSourceTrigger=LostFocus}" 
                              Margin="0,0,0,10"/>
                     <TextBlock Text="Rating:"
                                 Foreground="White"/>
                     <TextBox Width="130"
-                             Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=PropertyChanged}" 
+                             Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=LostFocus}" 
                              Margin="0,0,0,10"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
@@ -208,12 +223,12 @@
                              Height="40"
                              TextWrapping="Wrap"
                              Text="{Binding CurrentListItem.url, UpdateSourceTrigger=PropertyChanged}" 
-                             Margin="0,0,0,10"/>
+                             Margin="0,0,10,10"/>
                     <TextBlock Text="Max Progress:"
                                 Foreground="White"/>
                     <TextBox Width="130"
-                             Text="{Binding CurrentListItem.progressMax, UpdateSourceTrigger=PropertyChanged}" 
-                             Margin="0,0,0,10"/>
+                             Text="{Binding CurrentListItem.progressMax, UpdateSourceTrigger=LostFocus}" 
+                             Margin="0,0,10,10"/>
                     <TextBlock Text="Status:"
                                 Foreground="White"/>
                     <ComboBox Width="130"
@@ -279,31 +294,46 @@
                     </Border>
 
                     <!-- Upload-knop -->
-                    <Button Content="Upload Image"
-                    Command="{Binding SelectImageCommand}"
-                    Padding="12,4"
-                    HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Upload Image"
+                                Command="{Binding SelectImageCommand}"
+                                Padding="12,4"
+                                HorizontalAlignment="Center"
+                                        Margin="0,0,10,0"/>
+                        <Button Content="Remove Image"
+                                Command="{Binding RemoveImageCommand}"
+                                Padding="12,4"
+                                HorizontalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" >
-                <ComboBox Width="130"
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                    <TextBlock Text="Genres:"
+                               Foreground="White"
+                               Margin="0,0,0,0"/>
+                    <ComboBox Width="120"
+                               Height="25"
+                            VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
                           Foreground="Black"
                           Background="#3A3A3A"
                           BorderBrush="#707070"
                           SelectedItem="{Binding Genre1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding Genres}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding name}" 
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}" 
                                        Foreground="Black" 
-                                       FontSize="16" 
-                                       Padding="4"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox Width="130"
+                                       FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <ComboBox Width="120"
+                           Height="25"
+                            VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
                           Foreground="Black"
                           Background="#3A3A3A"
@@ -314,12 +344,13 @@
                         <DataTemplate>
                             <TextBlock Text="{Binding name}" 
                                        Foreground="Black" 
-                                       FontSize="16" 
-                                       Padding="4"/>
+                                       FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox Width="130"
+                <ComboBox Width="120"
+                           Height="25"
+                            VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
                           Foreground="Black"
                           Background="#3A3A3A"
@@ -330,12 +361,13 @@
                         <DataTemplate>
                             <TextBlock Text="{Binding name}" 
                        Foreground="Black" 
-                       FontSize="16" 
-                       Padding="4"/>
+                       FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox Width="130"
+                <ComboBox Width="120"
+                           Height="25"
+                            VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
                           Foreground="Black"
                           Background="#3A3A3A"
@@ -346,8 +378,7 @@
                         <DataTemplate>
                             <TextBlock Text="{Binding name}" 
                                        Foreground="Black" 
-                                       FontSize="16" 
-                                       Padding="4"/>
+                                       FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

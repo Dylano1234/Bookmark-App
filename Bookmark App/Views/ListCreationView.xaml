@@ -11,12 +11,15 @@
              MinWidth="500">
     <StackPanel>
         <!-- velden voor titel, cover, etc. -->
-        <TextBlock Text="Nieuwe lijst aanmaken"
+        <TextBlock Text="{Binding WindowTitle}"
                    Foreground="White"
                    FontSize="24"
                    FontWeight="Bold"
                    Margin="0,0,0,20" 
-                   HorizontalAlignment="Center"/>
+                   HorizontalAlignment="Center">
+            
+        </TextBlock>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
@@ -88,10 +91,17 @@
                 </Border>
 
                 <!-- Upload-knop -->
-                <Button Content="Upload Image"
-                    Command="{Binding SelectImageCommand}"
-                    Padding="12,4"
-                    HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Upload Image"
+                            Command="{Binding SelectImageCommand}"
+                            Padding="12,4"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,10,0"/>
+                    <Button Content="Remove Image"
+                            Command="{Binding RemoveImageCommand}"
+                            Padding="12,4"
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
 
@@ -102,7 +112,10 @@
                                   RelativeSource={RelativeSource AncestorType=Window}}" />
 
             <Button Content="Save"
+                    Margin="0,0,10,0"
                 Command="{Binding SaveListCommand}" />
+            <Button Content="Delete"
+                Command="{Binding DeleteListCommand}" />
         </StackPanel>
     </StackPanel>
 </UserControl>
