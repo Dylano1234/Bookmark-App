@@ -1,4 +1,5 @@
-﻿using Bookmark_App.Models;
+﻿using Bookmark_App.CloudSync;
+using Bookmark_App.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,12 @@ namespace Bookmark_App.DataAccess
             cmd.Parameters.AddWithValue("$coverImage", (object?)list.coverImage ?? DBNull.Value);
 
             var newId = (long)cmd.ExecuteScalar();
+            SyncStateManager.Current.IsLocalDirty = true;
+            SyncStateManager.Save();
+            if (SyncCoordinator.AutoSyncEnabled)
+            {
+                SyncCoordinator.NotifyDbChanged?.Invoke();
+            }
             return (int)newId;
         }
 
@@ -82,6 +89,12 @@ namespace Bookmark_App.DataAccess
             cmd.Parameters.AddWithValue("$id", list.id);
 
             cmd.ExecuteNonQuery();
+            SyncStateManager.Current.IsLocalDirty = true;
+            SyncStateManager.Save();
+            if (SyncCoordinator.AutoSyncEnabled)
+            {
+                SyncCoordinator.NotifyDbChanged?.Invoke();
+            }
         }
         public void Delete(List list)
         {
@@ -95,6 +108,13 @@ namespace Bookmark_App.DataAccess
                                 ";
             cmd.Parameters.AddWithValue("$id", list.id);
             cmd.ExecuteNonQuery();
+            SyncStateManager.Current.IsLocalDirty = true;
+            SyncStateManager.Save();
+            if (SyncCoordinator.AutoSyncEnabled)
+            {
+                SyncCoordinator.NotifyDbChanged?.Invoke();
+            }
+
         }
     }
 }

@@ -22,7 +22,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Center">
@@ -37,34 +37,22 @@
                         HorizontalAlignment="Center">
 
                 <!-- Vak met afbeelding of placeholder -->
-                <Border Width="200"
-                        Height="260"
+                <Border Width="260"
+                        Height="180"
                         CornerRadius="12"
                         BorderBrush="#666"
                         BorderThickness="1"
-                        Background="#333"
                         Margin="0,0,0,10">
-                    <Grid>
-                        <!-- Preview-image -->
-                        <Image Source="{Binding CoverPreview}"
-                                Stretch="UniformToFill">
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <!-- standaard zichtbaar -->
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <!-- Als CoverPreview null is → verbergen -->
-                                        <DataTrigger Binding="{Binding CoverPreview}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
 
+                    <!-- Preview-image -->
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding CoverPreview}"
+                                    Stretch="UniformToFill"/>
+                    </Border.Background>
+                    <Grid>
                         <!-- Placeholder -->
                         <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                                    VerticalAlignment="Center">
                             <StackPanel.Style>
                                 <Style TargetType="StackPanel">
                                     <!-- standaard verborgen -->
@@ -79,19 +67,21 @@
                             </StackPanel.Style>
 
                             <TextBlock Text="No image selected"
-                       Foreground="#AAAAAA"
-                       TextAlignment="Center"
-                       Margin="0,0,0,4"/>
+                                       Foreground="#AAAAAA"
+                                       TextAlignment="Center"
+                                       Margin="0,0,0,4"/>
                             <TextBlock Text="Press 'Upload Image'"
-                       Foreground="#777"
-                       FontSize="11"
-                       TextAlignment="Center"/>
+                                       Foreground="#777"
+                                       FontSize="11"
+                                       TextAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>
 
                 <!-- Upload-knop -->
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,80">
                     <Button Content="Upload Image"
                             Command="{Binding SelectImageCommand}"
                             Padding="12,4"

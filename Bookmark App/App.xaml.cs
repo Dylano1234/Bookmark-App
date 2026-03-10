@@ -15,11 +15,11 @@ namespace Bookmark_App
         {
             base.OnStartup(e);
 
-            // DB klaarzetten
+            // Initialize DB
             SQLitePCL.Batteries.Init();
             DatabaseInitializer.Initialize();
 
-            // Daarna je main window
+            // Start main window
             var mainWindow = new MainWindow();
             mainWindow.Show();
         }

@@ -1,4 +1,5 @@
-﻿using Bookmark_App.Models;
+﻿using Bookmark_App.CloudSync;
+using Bookmark_App.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -281,7 +282,7 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
 
             using var connection = new SqliteConnection(DbConfig.ConnectionString);
             connection.Open();
-
+            bool changed = false;
             using var transaction = connection.BeginTransaction();
             try
             {
@@ -320,6 +321,7 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                     updCmd.Parameters.AddWithValue("$itemId", listItem.id);
 
                     updCmd.ExecuteNonQuery();
+                    changed = true;
                 }
 
                 // 3) Insert new item_genres entries from listItem.genres (if any)
@@ -347,6 +349,12 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                 }
 
                 transaction.Commit();
+                SyncStateManager.Current.IsLocalDirty = true;
+                SyncStateManager.Save();
+                if (changed && SyncCoordinator.AutoSyncEnabled)
+                {
+                    SyncCoordinator.NotifyDbChanged?.Invoke();
+                }
             }
             catch
             {
@@ -361,6 +369,8 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
 
             using var connection = new SqliteConnection(DbConfig.ConnectionString);
             connection.Open();
+
+            bool changed = false;
 
             using var transaction = connection.BeginTransaction();
             try
@@ -385,6 +395,7 @@ SELECT last_insert_rowid();
 
                     var newId = (long)cmd.ExecuteScalar();
                     listItem.id = (int)newId;
+                    changed = true;
                 }
 
                 // Insert item_genres for the new item
@@ -406,8 +417,13 @@ SELECT last_insert_rowid();
                         insCmd.ExecuteNonQuery();
                     }
                 }
-
                 transaction.Commit();
+                SyncStateManager.Current.IsLocalDirty = true;
+                SyncStateManager.Save();
+                if (changed && SyncCoordinator.AutoSyncEnabled)
+                {
+                    SyncCoordinator.NotifyDbChanged?.Invoke();
+                }
             }
             catch
             {
@@ -422,7 +438,7 @@ SELECT last_insert_rowid();
 
             using var connection = new SqliteConnection(DbConfig.ConnectionString);
             connection.Open();
-
+            bool changed = false;
             using var transaction = connection.BeginTransaction();
             try
             {
@@ -441,9 +457,16 @@ SELECT last_insert_rowid();
                     delItem.CommandText = "DELETE FROM items WHERE id = $itemId;";
                     delItem.Parameters.AddWithValue("$itemId", listItem.id);
                     delItem.ExecuteNonQuery();
+                    changed = true;
                 }
 
                 transaction.Commit();
+                SyncStateManager.Current.IsLocalDirty = true;
+                SyncStateManager.Save();
+                if (changed && SyncCoordinator.AutoSyncEnabled)
+                {
+                    SyncCoordinator.NotifyDbChanged?.Invoke();
+                }
             }
             catch
             {

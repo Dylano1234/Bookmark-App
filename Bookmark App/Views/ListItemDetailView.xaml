@@ -41,46 +41,82 @@
                 <StackPanel Grid.Column="0" HorizontalAlignment="Center">
                     <TextBlock Text="Title:"
                    Foreground="White"/>
-                    <TextBox Width="130"
-                 Height="40"
-                 TextWrapping="Wrap"
-                 Text="{Binding CurrentListItem.title, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="40"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                    Height="40"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding CurrentListItem.title, UpdateSourceTrigger=PropertyChanged}" 
+                                    Foreground="White"       
+                                    Margin="3,0,0,0"/>
+                    </Border>
+                    
                     <TextBlock Text="Current Progress:"
                    Foreground="White"/>
-                    <TextBox Width="130"
-                 Text="{Binding CurrentListItem.progressCurrent, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="130"
+                                   Text="{Binding CurrentListItem.progressCurrent, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
                     <TextBlock Text="Rating:"
                    Foreground="White"/>
-                    <TextBox Width="130"
-                 Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                     <TextBlock Text="Url:"
                    Foreground="White"/>
-                    <TextBox Width="130"
-                 Height="40"
-                 TextWrapping="Wrap"
-                 Text="{Binding CurrentListItem.url, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="40"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding CurrentListItem.url, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
                     <TextBlock Text="Max Progress:"
                     Foreground="White"/>
-                    <TextBox Width="130"
-                 Text="{Binding CurrentListItem.progressMax, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="130"
+                                   Text="{Binding CurrentListItem.progressMax, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
                     <TextBlock Text="Status:"
                    Foreground="White"/>
-                    <TextBox Width="130"
-                 Text="{Binding CurrentListItem.status, UpdateSourceTrigger=PropertyChanged}" 
-                 IsReadOnly="True"
-                 Margin="0,0,0,10"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="130"
+                                   Text="{Binding CurrentListItem.status, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
 
 
                 </StackPanel>
@@ -90,24 +126,30 @@
                             HorizontalAlignment="Center">
 
                     <!-- Vak met afbeelding of placeholder -->
-                    <Border Width="200"
-                            Height="260"
-                            CornerRadius="12"
+                    <Border Width="145"
+                            Height="145"
+                            CornerRadius="75"
                             BorderBrush="#666"
                             BorderThickness="1"
-                            Background="#333"
-                            Margin="0,0,0,10">
+                            
+                            ClipToBounds="True"
+                            Margin="0,0,0,115">
+                        
+                        <!-- Preview-image -->
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding CurrentListItem.coverImage}"
+                                        Stretch="UniformToFill"/>
+                        </Border.Background>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentListItem.coverImage}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="#333"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Grid>
-                            <!-- Preview-image -->
-                            <Image Source="{Binding CurrentListItem.coverImage}"
-                                   Stretch="UniformToFill">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-
                             <!-- Placeholder -->
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
@@ -246,24 +288,30 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center">
 
-                    <!-- Vak met afbeelding of placeholder -->
-                    <Border Width="200"
-                    Height="260"
-                    CornerRadius="12"
-                    BorderBrush="#666"
-                    BorderThickness="1"
-                    Background="#333"
-                    Margin="0,0,0,10">
+                    <!-- Field with image or placeholder -->
+                    <Border Width="145"
+                            Height="145"
+                            CornerRadius="75"
+                            BorderBrush="#666"
+                            BorderThickness="1"
+                            Margin="0,0,0,10"
+                            ClipToBounds="True">
+
+                        <!-- Image Preview -->
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding CurrentListItem.coverImage}"
+                                        Stretch="UniformToFill"/>
+                        </Border.Background>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentListItem.coverImage}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="#333"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Grid>
-                            <!-- Preview-image -->
-                            <Image Source="{Binding CurrentListItem.coverImage}"
-                                    Stretch="UniformToFill">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </Style>
-                                </Image.Style>
-                            </Image>
 
                             <!-- Placeholder -->
                             <StackPanel HorizontalAlignment="Center"
@@ -294,7 +342,7 @@
                     </Border>
 
                     <!-- Upload-knop -->
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,115">
                         <Button Content="Upload Image"
                                 Command="{Binding SelectImageCommand}"
                                 Padding="12,4"

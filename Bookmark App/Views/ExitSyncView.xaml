@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Bookmark_App.Views.ExitSyncView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Bookmark_App.Views" xmlns:viewmodels="clr-namespace:Bookmark_App.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ExitSyncViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="110" d:DesignWidth="500">
+    <StackPanel>
+        <!-- Title Field -->
+        <TextBlock Text="Syncing data to cloud before exiting"
+           Foreground="White"
+           FontSize="24"
+           FontWeight="Bold"
+           Margin="0,0,0,5" 
+           HorizontalAlignment="Center"/>
+        <TextBlock Text="The application will automatically close after the upload is done."
+               Foreground="LightGray"
+               FontSize="14"
+               FontWeight="Bold"
+               Margin="0,0,0,20" 
+               HorizontalAlignment="Center"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Local Option -->
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                
+                <Button Content="Cancel"
+                    Width="120"
+                    Margin="0,0,0,0"
+                    Command="{Binding CancelCommand}"/>
+            </StackPanel>
+            <!-- Cloud Option -->
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                
+                <Button Content="Exit Now"
+                    Width="120"
+                    Command="{Binding ExitNowCommand}"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

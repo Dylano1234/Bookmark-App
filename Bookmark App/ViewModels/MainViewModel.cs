@@ -1,7 +1,12 @@
-﻿using Bookmark_App.Models;
+﻿using Bookmark_App.CloudSync;
+using Bookmark_App.DataAccess;
+using Bookmark_App.Models;
 using Bookmark_App.Services;
+using Bookmark_App.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +14,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
@@ -20,8 +28,17 @@ namespace Bookmark_App.ViewModels
         private BaseViewModel currentViewModel;
 
         private readonly ListService _listService;
+        public DriveService? _drive;
+        private SyncDebounceScheduler? _syncScheduler;
 
         public ListCreationViewModel CreateListViewModel { get; }
+
+        private bool _isLoggedIn;
+        public bool IsLoggedIn
+        {
+            get => _isLoggedIn;
+            set => SetProperty(ref _isLoggedIn, value);
+        }
 
         private bool _isCreateListOpen;
         public bool IsCreateListOpen
@@ -35,7 +52,34 @@ namespace Bookmark_App.ViewModels
             get => _isListItemDetailViewOpen;
             set => SetProperty(ref _isListItemDetailViewOpen, value);
         }
+        private bool _isSyncChoiceViewOpen;
+        public bool IsSyncChoiceViewOpen
+        {
+            get => _isSyncChoiceViewOpen;
+            set => SetProperty(ref _isSyncChoiceViewOpen, value);
+        }
+
+        private string _syncStatusText;
+        public string SyncStatusText
+        {
+            get => _syncStatusText;
+            set => SetProperty(ref _syncStatusText, value);
+        }
+        private Brush _syncStatusColor;
+        public Brush SyncStatusColor
+        {
+            get => _syncStatusColor;
+            set => SetProperty(ref _syncStatusColor, value);
+        }
+        private bool _isExitSyncViewOpen;
+        public bool IsExitSyncViewOpen
+        {
+            get => _isExitSyncViewOpen;
+            set => SetProperty(ref _isExitSyncViewOpen, value);
+        }
         public ListItemDetailViewModel? ListItemDetailViewModel { get; set; }
+        public SyncChoiceViewModel? SyncChoiceViewModel { get; set; }
+        public ExitSyncViewModel? ExitSyncViewModel { get; set; }
 
         public ICommand OpenCreateListCommand { get; }
         public ICommand CloseCreateListCommand { get; }
@@ -47,6 +91,14 @@ namespace Bookmark_App.ViewModels
         public ICommand OpenHomeCommand { get; }
         public ICommand OpenUrlCommand { get; }
         public ICommand OpenEditListCommand { get; }
+        public IAsyncRelayCommand InitializeCommand { get; }
+        public IAsyncRelayCommand SignInCommand { get; }
+        public IAsyncRelayCommand SignOutCommand { get; }
+        public ICommand OpenSyncChoiceCommand { get; }
+        public ICommand CloseSyncChoiceCommand { get; }
+        public ICommand SyncNowCommand { get; }
+        public ICommand OpenExitSyncViewCommand { get; }
+        public ICommand CloseExitSyncViewCommand { get; }
 
         public ObservableCollection<List> Lists { get; } = new();
 
@@ -58,6 +110,8 @@ namespace Bookmark_App.ViewModels
 
             CreateListViewModel = new ListCreationViewModel(this);
             ListItemDetailViewModel = new ListItemDetailViewModel(this);
+            SyncChoiceViewModel = new SyncChoiceViewModel(this);
+            ExitSyncViewModel = new ExitSyncViewModel(this);
 
             OpenCreateListCommand = new RelayCommand(OpenCreateList);
             CloseCreateListCommand = new RelayCommand(CloseCreateList);
@@ -69,7 +123,23 @@ namespace Bookmark_App.ViewModels
             OpenListItemDetailViewCommand = new RelayCommand<ListItem>(OpenListItemDetailView);
             CloseListItemDetailViewCommand = new RelayCommand(CloseListItemDetailView);
             OpenEditListCommand = new RelayCommand<List>(OpenEditList);
+            InitializeCommand = new AsyncRelayCommand(InitializeAsync);
+            SignInCommand = new AsyncRelayCommand(SignInAsync);
+            SignOutCommand = new AsyncRelayCommand(SignOutAsync);
+            OpenSyncChoiceCommand = new RelayCommand(OpenSyncChoice);
+            CloseSyncChoiceCommand = new RelayCommand(CloseSyncChoice);
+            SyncNowCommand = new RelayCommand(SyncNow);
+            OpenExitSyncViewCommand = new RelayCommand(OpenExitSyncView);
+            CloseExitSyncViewCommand = new RelayCommand(CloseExitSyncView);
 
+            IsLoggedIn = GoogleDriveAuth.TokenDirHasTokens();
+
+            SyncStateManager.Changed += () =>
+            {
+                Application.Current.Dispatcher.Invoke(UpdateSyncIndicator);
+            };
+
+            UpdateSyncIndicator();
 
             // Start op Home
 
@@ -212,6 +282,270 @@ namespace Bookmark_App.ViewModels
                 CreateListViewModel.CoverPreview = bmp;
             }
             IsCreateListOpen = true;
+        }
+        private async Task InitializeAsync()
+        {
+            // Don't trigger OAuth if user never signed in before
+            if (!GoogleDriveAuth.TokenDirHasTokens())
+            {
+                IsLoggedIn = false;
+                return;
+            }
+
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+                _drive = await GoogleDriveAuth.CreateDriveServiceAsync(cts.Token);
+                SetupSyncScheduler(_drive);
+
+                IsLoggedIn = true;
+            }
+            catch (OperationCanceledException)
+            {
+                IsLoggedIn = false;
+            }
+            catch (Exception)
+            {
+                // Tokens exist but aren't valid anymore (revoked, etc.)
+                IsLoggedIn = false;
+            }
+            if (IsLoggedIn)
+            {
+                await CheckSyncConfilct();
+            }
+        }
+        private async Task SignInAsync()
+        {
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+
+                _drive = await GoogleDriveAuth.CreateDriveServiceAsync(cts.Token);
+
+                SetupSyncScheduler(_drive);
+                MessageBox.Show(
+                    "Successfully logged in.",
+                    "Succesful Login",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+
+                IsLoggedIn = true;
+
+                if (IsLoggedIn)
+                {
+                    await CheckSyncConfilct();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show(
+                    "Login timed out or was cancelled. Close the browser window and try again.",
+                    "Login cancelled",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Failed Login",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+        private async Task SignOutAsync()
+        {
+            try
+            {
+                GoogleDriveAuth.SignOutLocal();
+                IsLoggedIn = false;
+
+                SyncCoordinator.NotifyDbChanged = null;
+                SyncCoordinator.SyncNowAsync = null;
+                _syncScheduler?.Dispose();
+                _syncScheduler = null;
+                SyncStateManager.Current.IsAutoSyncEnabled = false;
+                SyncStateManager.Save();
+
+                MessageBox.Show(
+                    "Successfully logged out.",
+                    "Succesful Logout",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Failed Logout",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void SetupSyncScheduler(DriveService drive)
+        {
+            var cloudSync = new CloudSyncService(drive);
+
+            _syncScheduler = new SyncDebounceScheduler(
+                syncActionAsync: cloudSync.UploadCurrentDbAsync,
+                debounceDelay: TimeSpan.FromSeconds(20),
+                maxWait: TimeSpan.FromMinutes(2));
+
+
+            SyncCoordinator.NotifyDbChanged = _syncScheduler.NotifyDbChanged;
+            SyncCoordinator.SyncNowAsync = _syncScheduler.SyncNowAsync;
+        }
+        private void OpenSyncChoice()
+        {
+            IsSyncChoiceViewOpen = true;
+        }
+        private void CloseSyncChoice()
+        {
+            IsSyncChoiceViewOpen = false;
+        }
+        private void SyncNow()
+        {
+            var result = MessageBox.Show(
+                    "Are you sure you want to upload to the cloud?\nIf you do, the data stored on the cloud will be overwritten and gone forever.",
+                    "Keep local data",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+                );
+
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+            SyncCoordinator.SyncNowAsync?.Invoke(CancellationToken.None);
+            SyncCoordinator.AutoSyncEnabled = true;
+            SyncStateManager.Current.IsAutoSyncEnabled = true;
+            SyncStateManager.Save();
+        }
+        private void OpenExitSyncView()
+        {
+            IsExitSyncViewOpen = true;
+        }
+        private void CloseExitSyncView()
+        {
+            IsExitSyncViewOpen = false;
+        }
+        private async Task CheckSyncConfilct()
+        {
+            try
+            {
+                var syncProvider = new GoogleDriveSyncProvider(_drive);
+
+                await syncProvider.DownloadManifestAsync(DbConfig.IncomingManifestFilePath);
+
+                var syncManifest = await ManifestService.ReadManifestAsync(
+                    DbConfig.IncomingManifestFilePath);
+
+                if (syncManifest == null) return;
+
+                var state = SyncStateStore.LoadOrCreate();
+
+                if (!string.Equals(syncManifest.SnapshotSha256, state.LastSyncedSnapshotSha256, StringComparison.OrdinalIgnoreCase) && state.IsLocalDirty) // Local has unsynced changes and cloud has different data than last sync -> conflict
+                {
+                    SyncChoiceViewModel.LocalLastSaved = state.LastSyncedUtc.HasValue
+                                                        ? state.LastSyncedUtc.Value.ToLocalTime().ToString("g")
+                                                        : "Never";
+                    SyncChoiceViewModel.CloudLastSaved = syncManifest.SnapshotCreatedUtc.ToLocalTime().ToString("g");
+                    SyncChoiceViewModel.CloudSaveDevice = $"{syncManifest.DeviceName} ({syncManifest.DeviceId.Substring(0, 8)})";
+                    OpenSyncChoice();
+                } 
+                else if (string.Equals(syncManifest.SnapshotSha256, state.LastSyncedSnapshotSha256, StringComparison.OrdinalIgnoreCase) && state.IsLocalDirty) // Local has unsynced changes and cloud has no new data since last sync -> just upload and overwrite cloud
+                { 
+                    SyncCoordinator.SyncNowAsync?.Invoke(CancellationToken.None);
+                    SyncCoordinator.AutoSyncEnabled = true;
+                }
+                else if (!string.Equals(syncManifest.SnapshotSha256, state.LastSyncedSnapshotSha256, StringComparison.OrdinalIgnoreCase) && !state.IsLocalDirty) // Cloud has new data and local has no unsynced changes -> just sync and overwrite local
+                {
+                    SyncCoordinator.AutoSyncEnabled = true;
+                    SyncStateManager.Current.IsAutoSyncEnabled = true;
+                    SyncStateManager.Save();
+
+                    SyncStatusText = "Fetching new data";
+                    SyncStatusColor = Brushes.Gold;
+
+                    await syncProvider.DownloadSnapshotAsync(DbConfig.IncomingSnapshotFilePath);
+                    await DatabaseSnapshotService.RestoreFromSnapshotAsync(DbConfig.IncomingSnapshotFilePath);
+                    state = SyncStateStore.LoadOrCreate();
+                    state.LastSyncedSnapshotSha256 = syncManifest.SnapshotSha256;
+                    state.LastSyncedUtc = syncManifest.SnapshotCreatedUtc;
+                    SyncStateStore.Save(state);
+                    SyncStateManager.Reload();
+                    LoadLists();
+                    if (CurrentViewModel is HomeViewModel HomeVM)
+                    {
+                        HomeVM.LoadLists();
+                    }
+                    else if (CurrentViewModel is ListViewModel ListVM)
+                    {
+                        ListVM.LoadItems(ListVM._list, ListVM.SelectedGenreSortOption, ListVM.SelectedSortingOption, ListVM.FilteringTitle, ListVM.Status, ListVM.ItemsPerPage, ListVM.CurrentPage ?? 1);
+                    }
+                }
+                else // No differences between cloud and local, just enable auto sync for future changes
+                {
+                    SyncCoordinator.AutoSyncEnabled = true;
+                    SyncStateManager.Current.IsAutoSyncEnabled = true;
+                    SyncStateManager.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                // log/show a status, but don't hang startup
+            }
+        }
+        private void UpdateSyncIndicator()
+        {
+            var state = SyncStateManager.Current;
+
+            if (!state.IsAutoSyncEnabled)
+            {
+                SyncStatusText = "Sync paused";
+                SyncStatusColor = Brushes.Orange;
+            }
+            else if (state.IsLocalDirty)
+            {
+                SyncStatusText = "Pending upload";
+                SyncStatusColor = Brushes.Gold;
+            }
+            else
+            {
+                SyncStatusText = "Up to date";
+                SyncStatusColor = Brushes.Green;
+            }
+
+            OnPropertyChanged(nameof(SyncStatusText));
+            OnPropertyChanged(nameof(SyncStatusColor));
+        }
+
+        public void BeginExitSync()
+        {
+            // If sync is blocked (keep local / cloud ahead), just exit immediately
+            var state = SyncStateManager.Current;
+            if (!IsLoggedIn || !state.IsAutoSyncEnabled || !state.IsLocalDirty)
+            {
+                RequestShutdown();
+                return;
+            }
+
+            IsExitSyncViewOpen = true;
+            ExitSyncViewModel.Start(); // starts upload with timeout
+        }
+
+        public void RequestShutdown()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (Application.Current.MainWindow is MainWindow w)
+                    w.AllowCloseAndShutdown();
+            });
         }
     }
 }

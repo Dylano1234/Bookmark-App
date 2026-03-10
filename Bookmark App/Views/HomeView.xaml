@@ -28,7 +28,7 @@
         <Border Grid.Row="1" MinHeight="60">
             <Grid>
                 <!-- Lege-staat tekst -->
-                <TextBlock Text="Er zijn geen lijsten aanwezig. Druk op de plus-knop in de zijbalk."
+                <TextBlock Text="No Lists available. Press the + in the sidebar to create a list."
                            FontSize="18"
                            Foreground="#AAAAAA"
                            TextWrapping="Wrap"
@@ -51,37 +51,39 @@
                 </TextBlock>
 
                 <!-- Lijstweergave -->
-                <Viewbox Stretch="Uniform"
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Viewbox Stretch="Uniform"
                          StretchDirection="Both"
                          VerticalAlignment="Top"
                          HorizontalAlignment="Left">
-                    <ItemsControl ItemsSource="{Binding Lists}">
-                        <ItemsControl.Style>
-                            <Style TargetType="ItemsControl">
-                                <!-- standaard zichtbaar -->
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <!-- Als Lists.Count == 0 → lijst verbergen -->
-                                    <DataTrigger Binding="{Binding Lists.Count}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ItemsControl.Style>
+                        <ItemsControl ItemsSource="{Binding Lists}">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <!-- standaard zichtbaar -->
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <!-- Als Lists.Count == 0 → lijst verbergen -->
+                                        <DataTrigger Binding="{Binding Lists.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
 
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="3" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <views:ListCardView/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Viewbox>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <views:ListCardView/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Viewbox>
+                </ScrollViewer>
             </Grid>
         </Border>
     </Grid>
