@@ -1,13 +1,11 @@
 ﻿using Bookmark_App.CloudSync;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class ExitSyncViewModel : BaseViewModel
+    public partial class ExitSyncViewModel : ObservableObject
     {
         public MainViewModel MainViewModel { get; }
 

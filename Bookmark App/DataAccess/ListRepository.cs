@@ -1,9 +1,6 @@
 ﻿using Bookmark_App.CloudSync;
 using Bookmark_App.Models;
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bookmark_App.DataAccess
 {

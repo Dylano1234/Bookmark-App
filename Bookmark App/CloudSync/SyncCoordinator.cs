@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bookmark_App.CloudSync
+﻿namespace Bookmark_App.CloudSync
 {
     public static class SyncCoordinator
     {

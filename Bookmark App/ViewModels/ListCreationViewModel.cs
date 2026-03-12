@@ -1,10 +1,8 @@
 ﻿using Bookmark_App.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class ListCreationViewModel : BaseViewModel
+    public partial class ListCreationViewModel : ObservableObject
     {
         private ImageSource? _coverPreview;
         private string? _listTitle;

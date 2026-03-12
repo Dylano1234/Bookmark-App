@@ -1,22 +1,16 @@
 ﻿using Bookmark_App.Models;
-using Bookmark_App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Linq;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class ListItemDetailViewModel : BaseViewModel
+    public partial class ListItemDetailViewModel : ObservableObject
     {
         private bool _isNewItem;
         public bool IsNewItem

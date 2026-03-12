@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Data.Sqlite;
 using System.IO;
-using System.Text;
-using Microsoft.Data.Sqlite;
 
 namespace Bookmark_App.DataAccess
 {

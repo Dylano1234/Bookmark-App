@@ -1,14 +1,11 @@
 ﻿using Bookmark_App.Models;
 using Bookmark_App.Services;
-using System;
-using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
 
 namespace Bookmark_App.ViewModels
 {
-    public class HomeViewModel : BaseViewModel
+    public class HomeViewModel : ObservableObject
     {
         private readonly ListService _listService;
 

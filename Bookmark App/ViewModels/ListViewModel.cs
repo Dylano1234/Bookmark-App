@@ -1,17 +1,12 @@
 ﻿using Bookmark_App.Models;
-using Bookmark_App.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Windows.Input;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class ListViewModel : BaseViewModel
+    public partial class ListViewModel : ObservableObject
     {
         public Models.List _list;
         public string Title => _list.title;

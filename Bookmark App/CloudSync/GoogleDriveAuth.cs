@@ -2,10 +2,7 @@
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Bookmark_App.CloudSync
 {

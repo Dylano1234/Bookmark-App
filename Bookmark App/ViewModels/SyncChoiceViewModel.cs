@@ -1,16 +1,13 @@
 ﻿using Bookmark_App.CloudSync;
 using Bookmark_App.DataAccess;
-using Bookmark_App.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class SyncChoiceViewModel : BaseViewModel
+    public partial class SyncChoiceViewModel : ObservableObject
     {
         public MainViewModel MainViewModel { get; }
 

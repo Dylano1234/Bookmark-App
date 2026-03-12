@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Bookmark_App.Models;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Bookmark_App.Models;
 
 namespace Bookmark_App.CloudSync
 {

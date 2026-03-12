@@ -6,15 +6,9 @@ using Bookmark_App.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,10 +16,10 @@ using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
 {
-    public partial class MainViewModel : BaseViewModel
+    public partial class MainViewModel : ObservableObject
     {
         [ObservableProperty]
-        private BaseViewModel currentViewModel;
+        private ObservableObject currentViewModel;
 
         private readonly ListService _listService;
         public DriveService? _drive;

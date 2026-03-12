@@ -1,8 +1,5 @@
 ﻿using Bookmark_App.DataAccess;
 using Google.Apis.Drive.v3;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Bookmark_App.CloudSync
