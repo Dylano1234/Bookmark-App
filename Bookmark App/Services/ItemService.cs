@@ -23,7 +23,7 @@ namespace Bookmark_App.Services
         {
             if(listItem.coverImage != null)
             {
-                listItem.coverImage = ImageService.ResizeImage(listItem.coverImage, 300, 400, 85);
+                listItem.coverImage = ImageService.ResizeImage(listItem.coverImage, 250, 250, 85);
             }
             
             _itemRepo.Update(listItem);
@@ -32,7 +32,7 @@ namespace Bookmark_App.Services
         {
             if (listItem.coverImage != null)
             {
-                listItem.coverImage = ImageService.ResizeImage(listItem.coverImage, 300, 400, 85);
+                listItem.coverImage = ImageService.ResizeImage(listItem.coverImage, 250, 250, 85);
             }
             _itemRepo.Insert(listItem, listid);
         }

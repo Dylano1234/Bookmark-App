@@ -29,6 +29,9 @@
                 <TextBlock Text="Title:"
                            Foreground="White"/>
                 <TextBox Width="100"
+                         Foreground="White"
+                         Background="#444"
+                         BorderBrush="#444"
                          Text="{Binding ListTitle, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <!-- Rechter kant: uploadvak -->
@@ -86,26 +89,41 @@
                             Command="{Binding SelectImageCommand}"
                             Padding="12,4"
                             HorizontalAlignment="Center"
-                            Margin="0,0,10,0"/>
+                            Margin="0,0,10,0"
+                            Foreground="White"
+                            Background="#444"
+                            BorderBrush="#444"/>
                     <Button Content="Remove Image"
                             Command="{Binding RemoveImageCommand}"
                             Padding="12,4"
-                            HorizontalAlignment="Center"/>
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Background="#444"
+                            BorderBrush="#444"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
             <Button Content="Cancel"
-                Margin="0,0,10,0"
-                Command="{Binding DataContext.CloseCreateListCommand,
-                                  RelativeSource={RelativeSource AncestorType=Window}}" />
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
+                    Margin="0,0,10,0"
+                    Command="{Binding DataContext.CloseCreateListCommand,
+                                      RelativeSource={RelativeSource AncestorType=Window}}" />
 
             <Button Content="Save"
                     Margin="0,0,10,0"
-                Command="{Binding SaveListCommand}" />
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
+                    Command="{Binding SaveListCommand}" />
             <Button Content="Delete"
-                Command="{Binding DeleteListCommand}" />
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
+                    Command="{Binding DeleteListCommand}" />
         </StackPanel>
     </StackPanel>
 </UserControl>

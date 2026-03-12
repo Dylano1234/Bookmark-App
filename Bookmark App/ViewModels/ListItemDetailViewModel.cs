@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace Bookmark_App.ViewModels
 {
@@ -115,10 +116,34 @@ namespace Bookmark_App.ViewModels
             
 
             CurrentListItem.genres.Clear();
-            if (Genre1 != null) CurrentListItem.genres.Add(Genre1);
-            if (Genre2 != null) CurrentListItem.genres.Add(Genre2);
-            if (Genre3 != null) CurrentListItem.genres.Add(Genre3);
-            if (Genre4 != null) CurrentListItem.genres.Add(Genre4);
+            if (Genre1 != null) 
+            { 
+                if (Genre1.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre1);
+                }
+            }
+            if (Genre2 != null)
+            {
+                if (Genre2.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre2);
+                }
+            }
+            if (Genre3 != null)
+            {
+                if (Genre3.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre3);
+                }
+            }
+            if (Genre4 != null)
+            {
+                if (Genre4.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre4);
+                }
+            }
 
             if(ItemValidation())
             {
@@ -191,6 +216,8 @@ namespace Bookmark_App.ViewModels
             Genres.Clear();
             foreach (var g in _genreService.GetAllGenres())
                 Genres.Add(g);
+
+            Genres.Add(new Genre { id = -1, name = "None" }); // Add a default "None" option
         }
         public void ResetGenres()
         {
@@ -203,7 +230,10 @@ namespace Bookmark_App.ViewModels
         {
             bool hasErrors = false;
             string errorMessage = "Please correct the following errors:\n";
+
+            // Ignore the "None" option which is represented by id == -1 when checking for duplicates.
             bool hasDuplicate = CurrentListItem.genres
+                .Where(g => g != null && g.id != -1)
                 .GroupBy(g => g.id)
                 .Any(group => group.Count() > 1);
 

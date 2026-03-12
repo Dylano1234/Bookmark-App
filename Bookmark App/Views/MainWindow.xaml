@@ -58,7 +58,7 @@
                               HorizontalScrollBarVisibility="Disabled">
                     <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
                         <StackPanel Background="#222" VerticalAlignment="Top" HorizontalAlignment="Left">
-                            <!-- lijstknoppen -->
+                            <!-- list buttons -->
                             <ItemsControl ItemsSource="{Binding Lists}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -130,12 +130,15 @@
                                        Foreground="White"
                                        FontSize="10"/>
                         </StackPanel>
-                        <Button Content="Sync Now"
-                                Width="50"
+                        <Button Content="Upload to cloud"
+                                Width="80"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Bottom"
                                 Margin="10,0,0,5"
                                 FontSize="10"
+                                Background="#333"
+                                Foreground="White"
+                                BorderBrush="#333"
                                 Command="{Binding SyncNowCommand}">
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -154,6 +157,9 @@
                                 VerticalAlignment="Bottom"
                                 Margin="10,0,0,10"
                                 FontSize="10"
+                                Background="#333"
+                                Foreground="White"
+                                BorderBrush="#333"
                                 Command="{Binding SignInCommand}">
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -173,6 +179,9 @@
                                 VerticalAlignment="Bottom"
                                 Margin="10,0,0,10"
                                 FontSize="10"
+                                Background="#333"
+                                Foreground="White"
+                                BorderBrush="#333"
                                 Command="{Binding SignOutCommand}">
                             <Button.Style>
                                 <Style TargetType="Button">

@@ -8,13 +8,116 @@
              xmlns:views="clr-namespace:Bookmark_App.Views" d:DataContext="{d:DesignInstance Type=vm:ListViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#555"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4a4a4a"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="FlatComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- flat square border -->
+                            <Border x:Name="Border"
+                                Grid.ColumnSpan="2"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0"
+                                Padding="4" />
+
+                            <!-- selected item -->
+                            <ContentPresenter x:Name="ContentSite"
+                                          Grid.Column="0"
+                                          Margin="3,0,4,0"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          VerticalAlignment="Center" />
+
+                            <!-- toggle button with hollow 'V' arrow -->
+                            <ToggleButton Grid.Column="1"
+                                      Focusable="false"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Width="20" Height="20"
+                                      Padding="0" Margin="0">
+                                <Viewbox Width="12" Height="12">
+                                    <!-- V shape (outlined) -->
+                                    <Path Data="M1,2 L6,8 L11,2"
+                                      Fill="Transparent"
+                                      Stroke="White"
+                                      StrokeThickness="1.4"
+                                      StrokeLineJoin="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeStartLineCap="Round"
+                                      Stretch="Uniform" />
+                                </Viewbox>
+                            </ToggleButton>
+
+                            <!-- popup; ensure it matches combobox width -->
+                            <Popup x:Name="Popup"
+                               Placement="Bottom"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide"
+                               IsOpen="{TemplateBinding IsDropDownOpen}">
+                                <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="0"
+                                    MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="20*" 
                        MinHeight="60"/>
-            <RowDefinition Height="10*" 
-                           MinHeight="60"/>
-            <RowDefinition Height="63*" />
+            <RowDefinition Height="8*" 
+                           MinHeight="30"/>
+            <RowDefinition Height="65*" />
             <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Background="#292929" MinHeight="60">
@@ -59,19 +162,16 @@
                 <Viewbox Grid.Column="1" Grid.Row="1" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
                     <ComboBox Width="120"
                               Height="30"
+                              Style="{StaticResource FlatComboBox}"
                               Margin="0,0,10,5"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Right"
                               FontSize="10"
-                              Foreground="Black"
-                              Background="#3A3A3A"
-                              BorderBrush="#707070"
                               SelectedItem="{Binding SelectedGenreSortOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Genres}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding name}" 
-                                           Foreground="Black" 
+                                <TextBlock Text="{Binding name}"  
                                            FontSize="16" 
                                            Padding="4"/>
                             </DataTemplate>
@@ -81,19 +181,16 @@
                 <Viewbox Grid.Column="2" Grid.Row="1" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Right">
                     <ComboBox Width="180"
                               Height="30"
+                              Style="{StaticResource FlatComboBox}"
                               Margin="10,0,10,5"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Right"
                               FontSize="10"
-                              Foreground="Black"
-                              Background="#3A3A3A"
-                              BorderBrush="#707070"
                               SelectedItem="{Binding SelectedSortingOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding SortingOptions}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding}" 
-                                           Foreground="Black" 
+                                <TextBlock Text="{Binding}"  
                                            FontSize="16" 
                                            Padding="4"/>
                             </DataTemplate>
@@ -299,51 +396,54 @@
         <Border Grid.Row="2" MinHeight="60" Margin="8,0,8,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
                 <!-- Use a Grid to show either the ItemsControl or a 'No Items found' message -->
-                <Grid>
-                    <ItemsControl ItemsSource="{Binding Items}">
-                        <ItemsControl.Style>
-                            <Style TargetType="ItemsControl">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Items.Count}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ItemsControl.Style>
+                <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <Grid>
+                        <ItemsControl ItemsSource="{Binding Items}">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
 
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <!-- vertical stacking so ScrollViewer handles vertical scrolling -->
-                                <StackPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <!-- vertical stacking so ScrollViewer handles vertical scrolling -->
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <views:ListItemCardView />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <views:ListItemCardView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    <!-- Shown when there are no items -->
-                    <TextBlock Text="No Items found"
+                        <!-- Shown when there are no items -->
+                        <TextBlock Text="No Items found"
                                Foreground="Gray"
                                FontSize="20"
                                HorizontalAlignment="Center"
-                               VerticalAlignment="Center">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Items.Count}" Value="0">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                               VerticalAlignment="Center"
+                                   Margin="100,0,100,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Viewbox>
             </ScrollViewer>
         </Border>
         <Border Grid.Row="3" MinHeight="20">

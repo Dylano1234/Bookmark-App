@@ -36,10 +36,11 @@ namespace Bookmark_App.Services
                 (double)maxWidth / bitmap.PixelWidth,
                 (double)maxHeight / bitmap.PixelHeight);
 
-            int newWidth = (int)(bitmap.PixelWidth * scale);
-            int newHeight = (int)(bitmap.PixelHeight * scale);
+            int newWidth = (int)Math.Round(bitmap.PixelWidth * scale);
+            int newHeight = (int)Math.Round(bitmap.PixelHeight * scale);
 
             var drawingVisual = new DrawingVisual();
+            RenderOptions.SetBitmapScalingMode(drawingVisual, BitmapScalingMode.Fant);
             using (var dc = drawingVisual.RenderOpen())
             {
                 dc.DrawImage(bitmap, new Rect(0, 0, newWidth, newHeight));

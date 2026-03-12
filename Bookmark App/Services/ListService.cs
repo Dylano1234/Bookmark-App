@@ -30,7 +30,7 @@ namespace Bookmark_App.Services
             };
             if (coverImage != null)
             {
-                list.coverImage = ImageService.ResizeImage(coverImage, 400, 300, 85);
+                list.coverImage = ImageService.ResizeImage(coverImage, 600, 600, 95);
             }
             var newId = _listRepo.Insert(list);
             list.id = newId;
@@ -40,7 +40,7 @@ namespace Bookmark_App.Services
         {
             if (coverImage != null)
             {
-                coverImage = ImageService.ResizeImage(coverImage, 400, 300, 85);
+                coverImage = ImageService.ResizeImage(coverImage, 600, 600, 95);
             }
             _listRepo.Update(list, title, coverImage);
             list.title = title;

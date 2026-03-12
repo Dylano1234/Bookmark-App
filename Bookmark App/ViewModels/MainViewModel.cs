@@ -238,6 +238,12 @@ namespace Bookmark_App.ViewModels
             if (itemGenres.Count > 1 && byId.TryGetValue(itemGenres[1].id, out var g2)) ListItemDetailViewModel.Genre2 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[1].id - 1];
             if (itemGenres.Count > 2 && byId.TryGetValue(itemGenres[2].id, out var g3)) ListItemDetailViewModel.Genre3 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[2].id - 1];
             if (itemGenres.Count > 3 && byId.TryGetValue(itemGenres[3].id, out var g4)) ListItemDetailViewModel.Genre4 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[3].id - 1];
+
+            Genre None = ListItemDetailViewModel.Genres.FirstOrDefault(g => g.id == -1);
+            if (ListItemDetailViewModel.Genre1 == null) ListItemDetailViewModel.Genre1 = None;
+            if (ListItemDetailViewModel.Genre2 == null) ListItemDetailViewModel.Genre2 = None;
+            if (ListItemDetailViewModel.Genre3 == null) ListItemDetailViewModel.Genre3 = None;
+            if (ListItemDetailViewModel.Genre4 == null) ListItemDetailViewModel.Genre4 = None;
         }
         private void OpenListItemDetailView(ListItem selectedListItem)
         {

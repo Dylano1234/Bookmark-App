@@ -6,6 +6,109 @@
              xmlns:local="clr-namespace:Bookmark_App.Views" xmlns:viewmodels="clr-namespace:Bookmark_App.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ListItemDetailViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#555"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4a4a4a"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="FlatComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- flat square border -->
+                            <Border x:Name="Border"
+                                    Grid.ColumnSpan="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="0"
+                                    Padding="4" />
+
+                            <!-- selected item -->
+                            <ContentPresenter x:Name="ContentSite"
+                                              Grid.Column="0"
+                                              Margin="3,0,4,0"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              VerticalAlignment="Center" />
+
+                            <!-- toggle button with hollow 'V' arrow -->
+                            <ToggleButton Grid.Column="1"
+                                          Focusable="false"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          Width="20" Height="20"
+                                          Padding="0" Margin="0">
+                                <Viewbox Width="12" Height="12">
+                                    <!-- V shape (outlined) -->
+                                    <Path Data="M1,2 L6,8 L11,2"
+                                          Fill="Transparent"
+                                          Stroke="White"
+                                          StrokeThickness="1.4"
+                                          StrokeLineJoin="Round"
+                                          StrokeEndLineCap="Round"
+                                          StrokeStartLineCap="Round"
+                                          Stretch="Uniform" />
+                                </Viewbox>
+                            </ToggleButton>
+
+                            <!-- popup; ensure it matches combobox width -->
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="0"
+                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <StackPanel>
         <!-- Title Field -->
         <TextBlock Text="{Binding HeaderTitle}"
@@ -46,12 +149,14 @@
                             Background="#1f1f1f"
                             CornerRadius="6"
                             Margin="0,0,0,10">
-                        <TextBlock Width="125"
-                                    Height="40"
-                                    TextWrapping="Wrap"
-                                    Text="{Binding CurrentListItem.title, UpdateSourceTrigger=PropertyChanged}" 
-                                    Foreground="White"       
-                                    Margin="3,0,0,0"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                            <TextBlock Width="125"
+                                        Height="40"
+                                        TextWrapping="Wrap"
+                                        Text="{Binding CurrentListItem.title, UpdateSourceTrigger=PropertyChanged}" 
+                                        Foreground="White"       
+                                        Margin="3,0,0,0"/>
+                        </ScrollViewer>
                     </Border>
                     
                     <TextBlock Text="Current Progress:"
@@ -87,11 +192,13 @@
                             Background="#1f1f1f"
                             CornerRadius="6"
                             Margin="0,0,0,10">
-                        <TextBlock Width="125"
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                            <TextBlock Width="125"
                                    TextWrapping="Wrap"
                                    Text="{Binding CurrentListItem.url, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,0,0,0"
                                    Foreground="White"/>
+                        </ScrollViewer>
                     </Border>
                     <TextBlock Text="Max Progress:"
                     Foreground="White"/>
@@ -184,34 +291,58 @@
                     <TextBlock Text="Genres:"
                                Foreground="White"
                                Margin="0,0,0,0"/>
-                    <TextBox Width="120"
-                             Height="25"
-                             FontSize="14"
-                        Text="{Binding CurrentListItem.genres[0].name, UpdateSourceTrigger=PropertyChanged}" 
-                        IsReadOnly="True"
-                        Margin="0,0,10,0"/>
+                    <Border Width="130"
+                            Height="25"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,10,0">
+                        <TextBlock Width="120"
+                                   Height="25"
+                                   FontSize="14"
+                                   Text="{Binding CurrentListItem.genres[0].name, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,2,0,0"
+                                   Foreground="White"/>
+                    </Border>
                 </StackPanel>
-                <TextBox Width="120"
-                         Height="25"
-                         VerticalAlignment="Bottom"
-                         FontSize="14"
-                        Text="{Binding CurrentListItem.genres[1].name, UpdateSourceTrigger=PropertyChanged}" 
-                        IsReadOnly="True"
-                        Margin="0,0,10,0"/>
-                <TextBox Width="120"
-                         Height="25"
-                         VerticalAlignment="Bottom"
-                         FontSize="14"
-                        Text="{Binding CurrentListItem.genres[2].name, UpdateSourceTrigger=PropertyChanged}" 
-                        IsReadOnly="True"
-                        Margin="0,0,10,0"/>
-                <TextBox Width="120"
-                         Height="25"
-                         VerticalAlignment="Bottom"
-                         FontSize="14"
-                        Text="{Binding CurrentListItem.genres[3].name, UpdateSourceTrigger=PropertyChanged}" 
-                        IsReadOnly="True"
-                        Margin="0,0,10,0"/>
+                <Border Width="130"
+                        Height="25"
+                        Background="#1f1f1f"
+                        CornerRadius="6"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Bottom">
+                    <TextBlock Width="120"
+                               Height="25"
+                               FontSize="14"
+                               Text="{Binding CurrentListItem.genres[1].name, UpdateSourceTrigger=PropertyChanged}" 
+                               Margin="3,2,0,0"
+                               Foreground="White"/>
+                </Border>
+                <Border Width="130"
+                        Height="25"
+                        Background="#1f1f1f"
+                        CornerRadius="6"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Bottom">
+                    <TextBlock Width="120"
+                                 Height="25"
+                                 FontSize="14"
+                                 Text="{Binding CurrentListItem.genres[2].name, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="3,2,0,0"
+                                 Foreground="White"/>
+                    </Border>
+                <Border Width="130"
+                        Height="25"
+                        Background="#1f1f1f"
+                        CornerRadius="6"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Bottom">
+                    <TextBlock Width="120"
+                               Height="25"
+                               FontSize="14"
+                               Text="{Binding CurrentListItem.genres[3].name, UpdateSourceTrigger=PropertyChanged}" 
+                               Margin="3,2,0,0"
+                               Foreground="White"/>
+                </Border>
             </StackPanel>
         </Grid>
 
@@ -246,17 +377,26 @@
                              Height="40"
                              TextWrapping="Wrap"
                              Text="{Binding CurrentListItem.title, UpdateSourceTrigger=PropertyChanged}" 
-                             Margin="0,0,0,10"/>
+                             Margin="0,0,0,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"/>
                     <TextBlock Text="Current Progress:"
-                                Foreground="White"/>
+                               Foreground="White"/>
                     <TextBox Width="130"
                              Text="{Binding CurrentListItem.progressCurrent, UpdateSourceTrigger=LostFocus}" 
-                             Margin="0,0,0,10"/>
+                             Margin="0,0,0,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"/>
                     <TextBlock Text="Rating:"
                                 Foreground="White"/>
                     <TextBox Width="130"
                              Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=LostFocus}" 
-                             Margin="0,0,0,10"/>
+                             Margin="0,0,0,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                     <TextBlock Text="Url:"
@@ -265,19 +405,24 @@
                              Height="40"
                              TextWrapping="Wrap"
                              Text="{Binding CurrentListItem.url, UpdateSourceTrigger=PropertyChanged}" 
-                             Margin="0,0,10,10"/>
+                             Margin="0,0,10,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"/>
                     <TextBlock Text="Max Progress:"
-                                Foreground="White"/>
+                               Foreground="White"/>
                     <TextBox Width="130"
                              Text="{Binding CurrentListItem.progressMax, UpdateSourceTrigger=LostFocus}" 
-                             Margin="0,0,10,10"/>
+                             Margin="0,0,10,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"/>
                     <TextBlock Text="Status:"
-                                Foreground="White"/>
+                               Foreground="White"/>
                     <ComboBox Width="130"
                               Margin="0,0,10,5"
-                              Foreground="Black"
-                              Background="#3A3A3A"
-                              BorderBrush="#707070"
+                              Height="20"
+                              Style="{StaticResource FlatComboBox}"
                               SelectedValue="{Binding CurrentListItem.status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Statuses}"/>
 
@@ -347,11 +492,17 @@
                                 Command="{Binding SelectImageCommand}"
                                 Padding="12,4"
                                 HorizontalAlignment="Center"
-                                        Margin="0,0,10,0"/>
+                                Margin="0,0,10,0"
+                                Foreground="White"
+                                Background="#444"
+                                BorderBrush="#444"/>
                         <Button Content="Remove Image"
                                 Command="{Binding RemoveImageCommand}"
                                 Padding="12,4"
-                                HorizontalAlignment="Center"/>
+                                HorizontalAlignment="Center"
+                                Foreground="White"
+                                Background="#444"
+                                BorderBrush="#444"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -363,17 +514,14 @@
                                Margin="0,0,0,0"/>
                     <ComboBox Width="120"
                                Height="25"
+                              Style="{StaticResource FlatComboBox}"
                             VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
-                          Foreground="Black"
-                          Background="#3A3A3A"
-                          BorderBrush="#707070"
                           SelectedItem="{Binding Genre1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding Genres}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding name}" 
-                                       Foreground="Black" 
+                                <TextBlock Text="{Binding name}"  
                                        FontSize="14"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -381,51 +529,42 @@
                 </StackPanel>
                 <ComboBox Width="120"
                            Height="25"
+                          Style="{StaticResource FlatComboBox}"
                             VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
-                          Foreground="Black"
-                          Background="#3A3A3A"
-                          BorderBrush="#707070"
                           SelectedItem="{Binding Genre2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding Genres}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding name}" 
-                                       Foreground="Black" 
+                            <TextBlock Text="{Binding name}"  
                                        FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <ComboBox Width="120"
                            Height="25"
+                          Style="{StaticResource FlatComboBox}"
                             VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
-                          Foreground="Black"
-                          Background="#3A3A3A"
-                          BorderBrush="#707070"
                           SelectedItem="{Binding Genre3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding Genres}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding name}" 
-                       Foreground="Black" 
+                            <TextBlock Text="{Binding name}"  
                        FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <ComboBox Width="120"
                            Height="25"
+                          Style="{StaticResource FlatComboBox}"
                             VerticalAlignment="Bottom"
                           Margin="0,0,10,5"
-                          Foreground="Black"
-                          Background="#3A3A3A"
-                          BorderBrush="#707070"
                           SelectedItem="{Binding Genre4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding Genres}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding name}" 
-                                       Foreground="Black" 
                                        FontSize="14"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -436,11 +575,17 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
             <Button Content="Cancel"
-            Margin="0,0,10,0"
-            Command="{Binding DataContext.CloseListItemDetailViewCommand,
-                              RelativeSource={RelativeSource AncestorType=Window}}" />
+                    Margin="0,0,10,0"
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
+                    Command="{Binding DataContext.CloseListItemDetailViewCommand,
+                                      RelativeSource={RelativeSource AncestorType=Window}}" />
 
             <Button Content="Save"
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
                     Command="{Binding SaveListItemCommand}">
                 <Button.Style>
                     <Style TargetType="Button">
@@ -455,6 +600,9 @@
             </Button>
             <Button Content="Delete"
                     Margin="10,0,10,0"
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
                     Command="{Binding DeleteListItemCommand}">
                 <Button.Style>
                     <Style TargetType="Button">
@@ -472,6 +620,9 @@
             </Button>
             <Button Content="Edit"
                     Margin="0,0,10,0"
+                    Foreground="White"
+                    Background="#444"
+                    BorderBrush="#444"
                     Command="{Binding DataContext.OpenListItemDetailViewEditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                     CommandParameter="{Binding}">
                 <Button.Style>

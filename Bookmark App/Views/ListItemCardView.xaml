@@ -79,7 +79,8 @@
                         ClipToBounds="True">
                         <Border.Background>
                             <ImageBrush ImageSource="{Binding coverImage}"
-                                    Stretch="UniformToFill"/>
+                                        Stretch="UniformToFill"
+                                        RenderOptions.BitmapScalingMode="Fant"/>
                         </Border.Background>
                     </Border>
                 </Border>
@@ -89,10 +90,12 @@
 
             <StackPanel Grid.Column="1"
                         VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
                         Margin="0,2,0,2"
                         Orientation="Vertical">
 
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal"
+                            MinWidth="650">
 
                     <!-- Titel -->
                     <TextBlock Text="{Binding title}"
@@ -100,7 +103,8 @@
                                 FontSize="32"
                                 Foreground="White"
                                 TextTrimming="CharacterEllipsis"
-                                VerticalAlignment="Center"/>
+                                VerticalAlignment="Center"
+                               MaxWidth="630"/>
 
                     <!-- Open URL -->
                     <Button Command="{Binding DataContext.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"

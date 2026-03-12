@@ -342,7 +342,7 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                     foreach (var g in listItem.genres)
                     {
                         // if genre object has no id, skip it
-                        if (g == null) continue;
+                        if (g == null || g.id == -1) continue;
                         genreIdParam.Value = g.id;
                         insCmd.ExecuteNonQuery();
                     }

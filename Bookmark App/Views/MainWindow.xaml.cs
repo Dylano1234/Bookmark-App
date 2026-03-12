@@ -23,7 +23,6 @@ namespace Bookmark_App.Views
     public partial class MainWindow : Window
     {
         private bool _allowClose = false;
-        private bool _exitPending;
 
         public MainWindow()
         {
