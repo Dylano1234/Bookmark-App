@@ -1,69 +1,47 @@
 ﻿using System.IO;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace Bookmark_App.Services
 {
     public static class ImageService
     {
         public static byte[] ResizeImage(
-        byte[] originalBytes,
-        int maxWidth,
-        int maxHeight,
-        int jpegQuality = 90)
+            byte[] originalBytes,
+            int maxWidth,
+            int maxHeight,
+            int jpegQuality = 90)
         {
             using var inputStream = new MemoryStream(originalBytes);
+            using var image = Image.Load(inputStream);
 
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.StreamSource = inputStream;
-            bitmap.EndInit();
-            bitmap.Freeze();
-
-            // Check of resizen nodig is
-            if (bitmap.PixelWidth <= maxWidth && bitmap.PixelHeight <= maxHeight)
+            // Check if resizing is necessary
+            if (image.Width <= maxWidth && image.Height <= maxHeight)
             {
-                // Geen rescale nodig → originele bytes behouden
+                // No rescale needed → keep original bytes 
                 return originalBytes;
             }
 
             double scale = Math.Min(
-                (double)maxWidth / bitmap.PixelWidth,
-                (double)maxHeight / bitmap.PixelHeight);
+                (double)maxWidth / image.Width,
+                (double)maxHeight / image.Height);
 
-            int newWidth = (int)Math.Round(bitmap.PixelWidth * scale);
-            int newHeight = (int)Math.Round(bitmap.PixelHeight * scale);
+            int newWidth = (int)Math.Round(image.Width * scale);
+            int newHeight = (int)Math.Round(image.Height * scale);
 
-            var drawingVisual = new DrawingVisual();
-            RenderOptions.SetBitmapScalingMode(drawingVisual, BitmapScalingMode.Fant);
-            using (var dc = drawingVisual.RenderOpen())
-            {
-                dc.DrawImage(bitmap, new Rect(0, 0, newWidth, newHeight));
-            }
-
-            var resizedBitmap = new RenderTargetBitmap(
+            image.Mutate(x => x.Resize(
                 newWidth,
                 newHeight,
-                96,
-                96,
-                PixelFormats.Pbgra32);
-
-            resizedBitmap.Render(drawingVisual);
-
-            var encoder = new JpegBitmapEncoder
-            {
-                QualityLevel = jpegQuality
-            };
-
-            encoder.Frames.Add(BitmapFrame.Create(resizedBitmap));
+                KnownResamplers.Lanczos3));
 
             using var outputStream = new MemoryStream();
-            encoder.Save(outputStream);
+            image.SaveAsJpeg(outputStream, new JpegEncoder
+            {
+                Quality = jpegQuality
+            });
 
             return outputStream.ToArray();
         }
-
     }
 }
