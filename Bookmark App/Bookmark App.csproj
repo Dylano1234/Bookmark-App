@@ -7,10 +7,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\Bookmark App Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\BookmarkAppLogo.png" />
     <None Remove="Assets\Manga.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Bookmark App Logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\BookmarkAppLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Manga.jpg" />
   </ItemGroup>
 

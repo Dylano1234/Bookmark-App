@@ -40,11 +40,16 @@
                 </Grid.RowDefinitions>
                 <Viewbox Grid.Row="0" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <StackPanel>
+                        <Image Source="/Assets/BookmarkAppLogo.png" 
+                               Width="30" 
+                               Height="20" 
+                               Margin="6,0,0,0"
+                               HorizontalAlignment="Left"/>
                         <Button Content="Home" 
                                 Background="#222" 
                                 Foreground="White"
                                 BorderBrush="#222"
-                                Margin="10,10,10,0"
+                                Margin="10,0,10,0"
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding OpenHomeCommand}"/>
                         <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
