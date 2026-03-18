@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Bookmark_App.DataAccess;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -12,7 +13,7 @@ namespace Bookmark_App.CloudSync
         };
 
         public static string StateFilePath =>
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sync_state.json");
+            Path.Combine(DbConfig.AppDataRoot, "sync_state.json");
 
         /// <summary>
         /// Loads sync state or creates a new one on first run.

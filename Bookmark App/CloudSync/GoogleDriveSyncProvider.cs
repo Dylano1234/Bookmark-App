@@ -14,6 +14,8 @@ namespace Bookmark_App.CloudSync
 
         // Folder name on Drive (visible). Change if you want.
         private const string FolderName = "Bookmark App Sync";
+        private const string SnapshotFileName = "bookmark.snapshot.db";
+        private const string ManifestFileName = "bookmark.manifest.json";
 
         public GoogleDriveSyncProvider(DriveService drive)
         {
@@ -141,7 +143,16 @@ namespace Bookmark_App.CloudSync
         {
             var state = SyncStateStore.LoadOrCreate();
             if (string.IsNullOrWhiteSpace(state.DriveManifestFileId))
-                return null;
+            {
+                // Try to find the manifest file in the sync folder
+                var folderId = await EnsureSyncFolderAsync(ct);
+                state.DriveManifestFileId = await TryFindFileIdInFolderAsync(folderId, ManifestFileName, ct);
+                
+                if (string.IsNullOrWhiteSpace(state.DriveManifestFileId))
+                    return null;
+                
+                SyncStateStore.Save(state);
+            }
 
             return await DownloadFileByIdAsync(state.DriveManifestFileId!, destinationPath, ct);
         }
@@ -154,7 +165,16 @@ namespace Bookmark_App.CloudSync
         {
             var state = SyncStateStore.LoadOrCreate();
             if (string.IsNullOrWhiteSpace(state.DriveSnapshotFileId))
-                return null;
+            {
+                // Try to find the snapshot file in the sync folder
+                var folderId = await EnsureSyncFolderAsync(ct);
+                state.DriveSnapshotFileId = await TryFindFileIdInFolderAsync(folderId, SnapshotFileName, ct);
+                
+                if (string.IsNullOrWhiteSpace(state.DriveSnapshotFileId))
+                    return null;
+                
+                SyncStateStore.Save(state);
+            }
 
             return await DownloadFileByIdAsync(state.DriveSnapshotFileId!, destinationPath, ct);
         }

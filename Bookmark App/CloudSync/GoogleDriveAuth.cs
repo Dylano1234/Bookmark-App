@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Bookmark_App.DataAccess;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
@@ -19,7 +20,7 @@ namespace Bookmark_App.CloudSync
         /// In that case, switch to AppData (recommended).
         /// </summary>
         public static string TokenDirNextToExe =>
-            Path.Combine(AppContext.BaseDirectory, "_tokens");
+            Path.Combine(DbConfig.AppDataRoot, "_tokens");
 
         public static bool TokenDirHasTokens()
         {
