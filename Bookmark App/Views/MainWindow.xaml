@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        MinHeight="400"
+        MinHeight="350"
         MinWidth="600">
 
     <Window.Resources>
@@ -22,281 +22,286 @@
         <System:Boolean x:Key="FalseValue">False</System:Boolean>
         <System:Boolean x:Key="TrueValue">True</System:Boolean>
     </Window.Resources>
-    
 
-    <Grid>
-        <Grid Background="#222">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20*"/>
-                <ColumnDefinition Width="80*"/>
-            </Grid.ColumnDefinitions>
+    <Grid Background="#222">
+        <Viewbox Stretch="Uniform">
+            <Grid x:Name="ContentContainer" Width="1920" Height="1010">
+                <Grid>
+                    <Grid Background="#222">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="80*"/>
+                        </Grid.ColumnDefinitions>
 
-            <!-- Sidebar -->
-            <Grid Grid.Column="0" VerticalAlignment="Stretch" x:Name="Sidebar">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" MinHeight="0"/>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Viewbox Grid.Row="0" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <StackPanel>
-                        <Image Source="/Assets/BookmarkAppLogo.png" 
-                               Width="30" 
-                               Height="20" 
-                               Margin="6,0,0,0"
-                               HorizontalAlignment="Left"/>
-                        <Button Content="Home" 
-                                Background="#222" 
-                                Foreground="White"
-                                BorderBrush="#222"
-                                Margin="10,0,10,0"
-                                HorizontalContentAlignment="Left"
-                                Command="{Binding OpenHomeCommand}"/>
-                        <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
-                                BorderBrush="#222"
-                                Width="100"
-                                Height="1"/>
-                    </StackPanel>
-                </Viewbox>
-                <ScrollViewer Grid.Row="1"
-                              VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
-                        <StackPanel Background="#222" VerticalAlignment="Top" HorizontalAlignment="Left">
-                            <!-- list buttons -->
-                            <ItemsControl ItemsSource="{Binding Lists}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid Columns="1" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
+                        <!-- Sidebar -->
+                        <Grid Grid.Column="0" VerticalAlignment="Stretch" x:Name="Sidebar">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" MinHeight="0"/>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Viewbox Grid.Row="0" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <StackPanel>
+                                    <Image Source="/Assets/BookmarkAppLogo.png" 
+                                           Width="30" 
+                                           Height="20" 
+                                           Margin="6,0,0,0"
+                                           HorizontalAlignment="Left"/>
+                                    <Button Content="Home" 
+                                            Background="#222" 
+                                            Foreground="White"
+                                            BorderBrush="#222"
+                                            Margin="10,0,10,0"
+                                            HorizontalContentAlignment="Left"
+                                            Command="{Binding OpenHomeCommand}"/>
+                                    <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
+                                            BorderBrush="#222"
+                                            Width="100"
+                                            Height="1"/>
+                                </StackPanel>
+                            </Viewbox>
+                            <ScrollViewer Grid.Row="1"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <StackPanel Background="#222" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                        <!-- list buttons -->
+                                        <ItemsControl ItemsSource="{Binding Lists}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="1" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
 
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button MaxWidth="80" 
-                                                Background="#222" 
-                                                Foreground="White"
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button MaxWidth="80" 
+                                                            Background="#222" 
+                                                            Foreground="White"
+                                                            BorderBrush="#222"
+                                                            Margin="10,0,10,0"
+                                                            HorizontalContentAlignment="Left"
+                                                            Command="{Binding DataContext.OpenListCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <TextBlock Text="{Binding title}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   TextWrapping="NoWrap"/>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
                                                 BorderBrush="#222"
-                                                Margin="10,0,10,0"
-                                                HorizontalContentAlignment="Left"
-                                                Command="{Binding DataContext.OpenListCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                CommandParameter="{Binding}">
-                                            <TextBlock Text="{Binding title}"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       TextWrapping="NoWrap"/>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
-                                    BorderBrush="#222"
-                                    Width="100"
-                                    Height="1"/>
-                        </StackPanel>
-                    </Viewbox>
-                </ScrollViewer>
-                <Viewbox Grid.Row="2" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                    <StackPanel Background="#222">
-                        <Button Style="{DynamicResource ButtonStyle1}" Content="+" 
-                                Background="#333" 
-                                Foreground="White"
-                                BorderBrush="#333"
-                                Margin="10,5,0,0"
-                                Width="15"
-                                Height="15"
-                                HorizontalContentAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Left"
-                                FontSize="10"
-                                Command="{Binding OpenCreateListCommand}"
-                                CommandParameter="{StaticResource TrueValue}"/>
-                        <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
-                                BorderBrush="#222"
-                                Width="100"
-                                Height="1"/>
-                        <StackPanel Orientation="Horizontal" Margin="10,0,0,5">
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="False">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                            <Ellipse Width="5"
-                                     Height="5"
-                                     Fill="{Binding SyncStatusColor}"
-                                     Margin="0,2,0,0"/>
-                            <TextBlock Text="{Binding SyncStatusText}"
-                                       Margin="2,0,0,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="White"
-                                       FontSize="10"/>
-                        </StackPanel>
-                        <Button Content="Upload to cloud"
-                                Width="80"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Margin="10,0,0,5"
-                                FontSize="10"
-                                Background="#333"
-                                Foreground="White"
-                                BorderBrush="#333"
-                                Command="{Binding SyncNowCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                                Width="100"
+                                                Height="1"/>
+                                    </StackPanel>
+                                </Viewbox>
+                            </ScrollViewer>
+                            <Viewbox Grid.Row="2" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                                <StackPanel Background="#222">
+                                    <Button Style="{DynamicResource ButtonStyle1}" Content="+" 
+                                            Background="#333" 
+                                            Foreground="White"
+                                            BorderBrush="#333"
+                                            Margin="10,5,0,0"
+                                            Width="15"
+                                            Height="15"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            FontSize="10"
+                                            Command="{Binding OpenCreateListCommand}"
+                                            CommandParameter="{StaticResource TrueValue}"/>
+                                    <Button Style="{DynamicResource ButtonStyleDummy}" Background="#222"
+                                            BorderBrush="#222"
+                                            Width="100"
+                                            Height="1"/>
+                                    <StackPanel Orientation="Horizontal" Margin="10,0,0,5">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Ellipse Width="5"
+                                                 Height="5"
+                                                 Fill="{Binding SyncStatusColor}"
+                                                 Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding SyncStatusText}"
+                                                   Margin="2,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="White"
+                                                   FontSize="10"/>
+                                    </StackPanel>
+                                    <Button Content="Upload to cloud"
+                                            Width="80"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            Margin="10,0,0,5"
+                                            FontSize="10"
+                                            Background="#333"
+                                            Foreground="White"
+                                            BorderBrush="#333"
+                                            Command="{Binding SyncNowCommand}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Content="Log in"
+                                            Width="40"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            Margin="10,0,0,10"
+                                            FontSize="10"
+                                            Background="#333"
+                                            Foreground="White"
+                                            BorderBrush="#333"
+                                            Command="{Binding SignInCommand}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
                                             <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        <Button Content="Log in"
-                                Width="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Margin="10,0,0,10"
-                                FontSize="10"
-                                Background="#333"
-                                Foreground="White"
-                                BorderBrush="#333"
-                                Command="{Binding SignInCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        <Button Grid.Row="1"
-                                Content="Log out"
-                                Width="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Margin="10,0,0,10"
-                                FontSize="10"
-                                Background="#333"
-                                Foreground="White"
-                                BorderBrush="#333"
-                                Command="{Binding SignOutCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </StackPanel>
-                </Viewbox>
-            </Grid>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Grid.Row="1"
+                                            Content="Log out"
+                                            Width="40"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            Margin="10,0,0,10"
+                                            FontSize="10"
+                                            Background="#333"
+                                            Foreground="White"
+                                            BorderBrush="#333"
+                                            Command="{Binding SignOutCommand}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </Viewbox>
+                        </Grid>
             
-            <!-- Dynamische content -->
-            <ContentControl Grid.Column="1"
-                    Content="{Binding CurrentViewModel}" />
-        </Grid>
-        <Grid Background="#80000000">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsCreateListOpen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
-                     Margin="50,50,50,50">
-                <Border Width="500"
-                        Padding="20"
-                        Background="#292929"
-                        CornerRadius="12"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <views:ListCreationView DataContext="{Binding CreateListViewModel}" />
-                </Border>
-            </Viewbox>
-        </Grid>
-        <Grid Background="#80000000">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsListItemDetailViewOpen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
-                     Margin="50,50,50,50">
-                <Border Width="600"
-                        Padding="20"
-                        Background="#292929"
-                        CornerRadius="12"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <views:ListItemDetailView DataContext="{Binding ListItemDetailViewModel}" />
-                </Border>
-            </Viewbox>
-        </Grid>
-        <Grid Background="#80000000">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSyncChoiceViewOpen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
-             Margin="50,50,50,50">
-                <Border Width="600"
-                Padding="20"
-                Background="#292929"
-                CornerRadius="12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-                    <views:SyncChoiceView DataContext="{Binding SyncChoiceViewModel}" />
-                </Border>
-            </Viewbox>
-        </Grid>
-        <Grid Background="#80000000">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsExitSyncViewOpen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="50,50,50,50">
-                <Border Width="600"
-                        Padding="20"
-                        Background="#292929"
-                        CornerRadius="12"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <views:ExitSyncView DataContext="{Binding ExitSyncViewModel}" />
-                </Border>
-            </Viewbox>
-        </Grid>
+                        <!-- Dynamische content -->
+                        <ContentControl Grid.Column="1"
+                                Content="{Binding CurrentViewModel}" />
+                    </Grid>
+                    <Grid Background="#80000000">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCreateListOpen}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                 Margin="50,50,50,50">
+                            <Border Width="500"
+                                    Padding="20"
+                                    Background="#292929"
+                                    CornerRadius="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <views:ListCreationView DataContext="{Binding CreateListViewModel}" />
+                            </Border>
+                        </Viewbox>
+                    </Grid>
+                    <Grid Background="#80000000">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsListItemDetailViewOpen}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                 Margin="50,50,50,50">
+                            <Border Width="600"
+                                    Padding="20"
+                                    Background="#292929"
+                                    CornerRadius="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <views:ListItemDetailView DataContext="{Binding ListItemDetailViewModel}" />
+                            </Border>
+                        </Viewbox>
+                    </Grid>
+                    <Grid Background="#80000000">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSyncChoiceViewOpen}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
+                         Margin="50,50,50,50">
+                            <Border Width="600"
+                            Padding="20"
+                            Background="#292929"
+                            CornerRadius="12"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                                <views:SyncChoiceView DataContext="{Binding SyncChoiceViewModel}" />
+                            </Border>
+                        </Viewbox>
+                    </Grid>
+                    <Grid Background="#80000000">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsExitSyncViewOpen}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="50,50,50,50">
+                            <Border Width="600"
+                                    Padding="20"
+                                    Background="#292929"
+                                    CornerRadius="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <views:ExitSyncView DataContext="{Binding ExitSyncViewModel}" />
+                            </Border>
+                        </Viewbox>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>
