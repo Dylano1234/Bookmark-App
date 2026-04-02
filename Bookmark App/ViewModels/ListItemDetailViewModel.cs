@@ -84,6 +84,19 @@ namespace Bookmark_App.ViewModels
             set => SetProperty(ref _genre4, value);
         }
 
+        private Genre? _genre5;
+        public Genre? Genre5
+        {
+            get => _genre5;
+            set => SetProperty(ref _genre5, value);
+        }
+        private Genre? _genre6;
+        public Genre? Genre6
+        {
+            get => _genre6;
+            set => SetProperty(ref _genre6, value);
+        }
+
         public ObservableCollection<Genre> Genres { get; set; } = new ObservableCollection<Genre>();
         private MainViewModel MainViewModel;
         public ICommand SaveListItemCommand { get; }
@@ -138,8 +151,22 @@ namespace Bookmark_App.ViewModels
                     CurrentListItem.genres.Add(Genre4);
                 }
             }
+            if(Genre5 != null)
+            {
+                if (Genre5.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre5);
+                }
+            }
+            if(Genre6 != null)
+            {
+                if (Genre6.id != -1)
+                {
+                    CurrentListItem.genres.Add(Genre6);
+                }
+            }
 
-            if(ItemValidation())
+            if (ItemValidation())
             {
                 return;
             }

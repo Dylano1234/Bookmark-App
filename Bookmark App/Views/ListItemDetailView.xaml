@@ -286,63 +286,94 @@
                     </Border>
                 </StackPanel>
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
-                    <TextBlock Text="Genres:"
-                               Foreground="White"
-                               Margin="0,0,0,0"/>
+            <StackPanel Grid.Row="1" Orientation="Vertical"> 
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                        <TextBlock Text="Genres:"
+                                   Foreground="White"
+                                   Margin="0,0,0,0"/>
+                        <Border Width="130"
+                                Height="25"
+                                Background="#1f1f1f"
+                                CornerRadius="6"
+                                Margin="0,0,65,0">
+                            <TextBlock Width="120"
+                                       Height="25"
+                                       FontSize="14"
+                                       Text="{Binding CurrentListItem.genres[0].name, UpdateSourceTrigger=PropertyChanged}" 
+                                       Margin="3,2,0,0"
+                                       Foreground="White"/>
+                        </Border>
+                    </StackPanel>
                     <Border Width="130"
                             Height="25"
                             Background="#1f1f1f"
                             CornerRadius="6"
-                            Margin="0,0,10,0">
+                            Margin="0,0,65,0"
+                            VerticalAlignment="Bottom">
                         <TextBlock Width="120"
                                    Height="25"
                                    FontSize="14"
-                                   Text="{Binding CurrentListItem.genres[0].name, UpdateSourceTrigger=PropertyChanged}" 
+                                   Text="{Binding CurrentListItem.genres[1].name, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,2,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <Border Width="130"
+                            Height="25"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Bottom">
+                        <TextBlock Width="120"
+                                     Height="25"
+                                     FontSize="14"
+                                     Text="{Binding CurrentListItem.genres[2].name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Margin="3,2,0,0"
+                                     Foreground="White"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                        <Border Width="130"
+                                Height="25"
+                                Background="#1f1f1f"
+                                CornerRadius="6"
+                                Margin="0,0,65,0">
+                            <TextBlock Width="120"
+                                       Height="25"
+                                       FontSize="14"
+                                       Text="{Binding CurrentListItem.genres[3].name, UpdateSourceTrigger=PropertyChanged}" 
+                                       Margin="3,2,0,0"
+                                       Foreground="White"/>
+                        </Border>
+                    </StackPanel>
+                    <Border Width="130"
+                            Height="25"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,65,0"
+                            VerticalAlignment="Bottom">
+                        <TextBlock Width="120"
+                                   Height="25"
+                                   FontSize="14"
+                                   Text="{Binding CurrentListItem.genres[4].name, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,2,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <Border Width="130"
+                            Height="25"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Bottom">
+                        <TextBlock Width="120"
+                                   Height="25"
+                                   FontSize="14"
+                                   Text="{Binding CurrentListItem.genres[5].name, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,2,0,0"
                                    Foreground="White"/>
                     </Border>
                 </StackPanel>
-                <Border Width="130"
-                        Height="25"
-                        Background="#1f1f1f"
-                        CornerRadius="6"
-                        Margin="0,0,10,0"
-                        VerticalAlignment="Bottom">
-                    <TextBlock Width="120"
-                               Height="25"
-                               FontSize="14"
-                               Text="{Binding CurrentListItem.genres[1].name, UpdateSourceTrigger=PropertyChanged}" 
-                               Margin="3,2,0,0"
-                               Foreground="White"/>
-                </Border>
-                <Border Width="130"
-                        Height="25"
-                        Background="#1f1f1f"
-                        CornerRadius="6"
-                        Margin="0,0,10,0"
-                        VerticalAlignment="Bottom">
-                    <TextBlock Width="120"
-                                 Height="25"
-                                 FontSize="14"
-                                 Text="{Binding CurrentListItem.genres[2].name, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="3,2,0,0"
-                                 Foreground="White"/>
-                    </Border>
-                <Border Width="130"
-                        Height="25"
-                        Background="#1f1f1f"
-                        CornerRadius="6"
-                        Margin="0,0,10,0"
-                        VerticalAlignment="Bottom">
-                    <TextBlock Width="120"
-                               Height="25"
-                               FontSize="14"
-                               Text="{Binding CurrentListItem.genres[3].name, UpdateSourceTrigger=PropertyChanged}" 
-                               Margin="3,2,0,0"
-                               Foreground="White"/>
-                </Border>
             </StackPanel>
         </Grid>
 
@@ -506,69 +537,100 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" >
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
-                    <TextBlock Text="Genres:"
-                               Foreground="White"
-                               Margin="0,0,0,0"/>
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                        <TextBlock Text="Genres:"
+                                   Foreground="White"
+                                   Margin="0,0,0,0"/>
+                        <ComboBox Width="120"
+                                  Height="25"
+                                  Style="{StaticResource FlatComboBox}"
+                                  VerticalAlignment="Bottom"
+                                  Margin="0,0,75,5"
+                                  SelectedItem="{Binding Genre1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding Genres}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding name}"  
+                                               FontSize="14"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
                     <ComboBox Width="120"
-                               Height="25"
+                              Height="25"
                               Style="{StaticResource FlatComboBox}"
-                            VerticalAlignment="Bottom"
-                          Margin="0,0,10,5"
-                          SelectedItem="{Binding Genre1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding Genres}">
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,75,5"
+                              SelectedItem="{Binding Genre2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Genres}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding name}"  
-                                       FontSize="14"/>
+                                           FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox Width="120"
+                              Height="25"
+                              Style="{StaticResource FlatComboBox}"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,10,5"
+                              SelectedItem="{Binding Genre3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Genres}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"  
+                                           FontSize="14"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                <ComboBox Width="120"
-                           Height="25"
-                          Style="{StaticResource FlatComboBox}"
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <ComboBox Width="120"
+                              Height="25"
+                              Style="{StaticResource FlatComboBox}"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,75,5"
+                              SelectedItem="{Binding Genre4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Genres}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"  
+                                            FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox Width="120"
+                            Height="25"
+                            Style="{StaticResource FlatComboBox}"
                             VerticalAlignment="Bottom"
-                          Margin="0,0,10,5"
-                          SelectedItem="{Binding Genre2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding Genres}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding name}"  
-                                       FontSize="14"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox Width="120"
-                           Height="25"
-                          Style="{StaticResource FlatComboBox}"
-                            VerticalAlignment="Bottom"
-                          Margin="0,0,10,5"
-                          SelectedItem="{Binding Genre3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding Genres}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding name}"  
-                       FontSize="14"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox Width="120"
-                           Height="25"
-                          Style="{StaticResource FlatComboBox}"
-                            VerticalAlignment="Bottom"
-                          Margin="0,0,10,5"
-                          SelectedItem="{Binding Genre4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding Genres}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding name}" 
-                                       FontSize="14"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                            Margin="0,0,75,5"
+                            SelectedItem="{Binding Genre5, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ItemsSource="{Binding Genres}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"  
+                                            FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox Width="120"
+                              Height="25"
+                              Style="{StaticResource FlatComboBox}"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,10,5"
+                              SelectedItem="{Binding Genre6, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Genres}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"  
+                                           FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
             </StackPanel>
         </Grid>
 

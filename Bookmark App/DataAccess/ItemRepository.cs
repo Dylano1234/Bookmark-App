@@ -84,7 +84,7 @@ namespace Bookmark_App.DataAccess
                                 LEFT JOIN genres g       ON g.id = ig.genre_id
                                 ");
                 idSb.Append(whereSb.ToString());
-                idSb.AppendLine($"ORDER BY {orderBy}, g.name");
+                idSb.AppendLine($"ORDER BY {orderBy}");
                 idSb.AppendLine("LIMIT $Limit OFFSET $Offset;");
 
                 idCmd.CommandText = idSb.ToString();
@@ -120,7 +120,7 @@ LEFT JOIN item_genres ig ON ig.item_id = i.id
 LEFT JOIN genres g       ON g.id = ig.genre_id
 ");
                 idSb.Append(whereSb.ToString());
-                idSb.AppendLine($"ORDER BY {orderBy}, g.name;");
+                idSb.AppendLine($"ORDER BY {orderBy};");
 
                 idCmd.CommandText = idSb.ToString();
 
@@ -166,7 +166,7 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                 sb.Append($"$id{i}");
             }
             sb.AppendLine(")");
-            sb.AppendLine($"ORDER BY {orderBy}, g.name;");
+            sb.AppendLine($"ORDER BY {orderBy}, ig.rowid ASC;");
 
             cmd.CommandText = sb.ToString();
 

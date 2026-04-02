@@ -214,30 +214,40 @@ namespace Bookmark_App.ViewModels
             ListItemDetailViewModel.HeaderTitle = "Edit Item";
             ListItemDetailViewModel.IsEditMode = true;
             ListItemDetailViewModel.IsNewItem = false;
+            
             if (currentViewModel is ListViewModel listVM)
             {
                 ListItemDetailViewModel.CurrentListid = listVM._list.id;
             }
 
             var byId = ListItemDetailViewModel.Genres.ToDictionary(g => g.id);
-
-            ListItemDetailViewModel.Genre1 = null;
-            ListItemDetailViewModel.Genre2 = null;
-            ListItemDetailViewModel.Genre3 = null;
-            ListItemDetailViewModel.Genre4 = null;
-
+            var noneGenre = ListItemDetailViewModel.Genres.FirstOrDefault(g => g.id == -1) ?? new Genre { id = -1, name = "None" };
             var itemGenres = ListItemDetailViewModel.CurrentListItem.genres;
 
-            if (itemGenres.Count > 0 && byId.TryGetValue(itemGenres[0].id, out var g1)) ListItemDetailViewModel.Genre1 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[0].id - 1];
-            if (itemGenres.Count > 1 && byId.TryGetValue(itemGenres[1].id, out var g2)) ListItemDetailViewModel.Genre2 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[1].id - 1];
-            if (itemGenres.Count > 2 && byId.TryGetValue(itemGenres[2].id, out var g3)) ListItemDetailViewModel.Genre3 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[2].id - 1];
-            if (itemGenres.Count > 3 && byId.TryGetValue(itemGenres[3].id, out var g4)) ListItemDetailViewModel.Genre4 = ListItemDetailViewModel.Genres[ListItemDetailViewModel.CurrentListItem.genres[3].id - 1];
+            // Assign genres using helper
+            AssignGenreProperty(1, itemGenres, byId, noneGenre);
+            AssignGenreProperty(2, itemGenres, byId, noneGenre);
+            AssignGenreProperty(3, itemGenres, byId, noneGenre);
+            AssignGenreProperty(4, itemGenres, byId, noneGenre);
+            AssignGenreProperty(5, itemGenres, byId, noneGenre);
+            AssignGenreProperty(6, itemGenres, byId, noneGenre);
+        }
 
-            Genre None = ListItemDetailViewModel.Genres.FirstOrDefault(g => g.id == -1);
-            if (ListItemDetailViewModel.Genre1 == null) ListItemDetailViewModel.Genre1 = None;
-            if (ListItemDetailViewModel.Genre2 == null) ListItemDetailViewModel.Genre2 = None;
-            if (ListItemDetailViewModel.Genre3 == null) ListItemDetailViewModel.Genre3 = None;
-            if (ListItemDetailViewModel.Genre4 == null) ListItemDetailViewModel.Genre4 = None;
+        private void AssignGenreProperty(int index, ObservableCollection<Genre> itemGenres, Dictionary<int, Genre> byId, Genre noneGenre)
+        {
+            var genre = itemGenres.Count > index - 1 && byId.TryGetValue(itemGenres[index - 1].id, out var g) 
+                ? g 
+                : noneGenre;
+
+            switch (index)
+            {
+                case 1: ListItemDetailViewModel.Genre1 = genre; break;
+                case 2: ListItemDetailViewModel.Genre2 = genre; break;
+                case 3: ListItemDetailViewModel.Genre3 = genre; break;
+                case 4: ListItemDetailViewModel.Genre4 = genre; break;
+                case 5: ListItemDetailViewModel.Genre5 = genre; break;
+                case 6: ListItemDetailViewModel.Genre6 = genre; break;
+            }
         }
         private void OpenListItemDetailView(ListItem selectedListItem)
         {
