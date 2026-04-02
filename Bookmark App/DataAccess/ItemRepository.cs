@@ -34,10 +34,10 @@ namespace Bookmark_App.DataAccess
                     orderBy = "i.rating DESC";
                     break;
                 case "Progress Ascending":
-                    orderBy = "CAST(i.progress_current AS REAL) / NULLIF(i.progress_max,0) ASC";
+                    orderBy = "i.progress_current ASC";
                     break;
                 case "Progress Descending":
-                    orderBy = "CAST(i.progress_current AS REAL) / NULLIF(i.progress_max,0) DESC";
+                    orderBy = "i.progress_current DESC";
                     break;
                 default:
                     orderBy = "i.title COLLATE NOCASE ASC";
