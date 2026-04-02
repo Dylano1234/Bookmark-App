@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Bookmark_App.Views" xmlns:viewmodels="clr-namespace:Bookmark_App.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ListViewModel}"
              mc:Ignorable="d" 
 
-             MinHeight="80">
+             MinHeight="60">
     <Border CornerRadius="18"
             Background="#292929"
             Padding="10"
@@ -62,9 +62,9 @@
             <!-- COVER LINKS -->
             <Viewbox Grid.Column="0" Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Border
-                    Width="96"
-                    Height="96"
-                    CornerRadius="48"
+                    Width="85"
+                    Height="85"
+                    CornerRadius="43"
                     BorderThickness="1"
                     BorderBrush="#707070"
                     Background="#3A3A3A"
@@ -72,9 +72,9 @@
                     Margin="4,0,12,0"
                     ClipToBounds="True">
                     <Border Grid.Column="0"
-                        Width="96"
-                        Height="96"
-                        CornerRadius="48"
+                        Width="85"
+                        Height="85"
+                        CornerRadius="43"
                         VerticalAlignment="Center"
                         ClipToBounds="True">
                         <Border.Background>
@@ -100,11 +100,14 @@
                     <!-- Titel -->
                     <TextBlock Text="{Binding title}"
                                 FontWeight="Bold"
-                                FontSize="32"
+                                FontSize="24"
                                 Foreground="White"
+                               TextWrapping="Wrap"
                                 TextTrimming="CharacterEllipsis"
                                 VerticalAlignment="Center"
-                               MaxWidth="630"/>
+                               MaxWidth="630"
+                               MaxHeight="70"
+                               ToolTip="{Binding title}"/>
 
                     <!-- Open URL -->
                     <Button Command="{Binding DataContext.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -137,7 +140,7 @@
 
                 <!-- Genres -->
                 <TextBlock Text="{Binding GenresText}"
-                        FontSize="24"
+                        FontSize="18"
                         Foreground="#BBBBBB"
                         Margin="0,4,0,0"
                         TextTrimming="CharacterEllipsis"/>
@@ -155,9 +158,9 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Rating in cirkel: '2/10' -->
-                    <Border Width="84"
-                            Height="84"
-                            CornerRadius="42"
+                    <Border Width="70"
+                            Height="70"
+                            CornerRadius="40"
                             BorderBrush="#CCCCCC"
                             BorderThickness="1"
                             Background="Transparent"
@@ -191,7 +194,7 @@
                                 Margin="20,0,10,0">
                             <TextBlock Text="Progress:"
                                    Foreground="White"
-                                   FontSize="24"
+                                   FontSize="18"
                                    HorizontalAlignment="Left"/>
                             <Viewbox Stretch="Uniform" StretchDirection="Both"> 
                                 <StackPanel Orientation="Horizontal"
@@ -199,7 +202,7 @@
                                      HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding ProgressText}"  
                                            Foreground="White"
-                                           FontSize="24"
+                                           FontSize="18"
                                            VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Viewbox>
@@ -207,8 +210,8 @@
                     </Viewbox>
                     <!-- '+' knop -->
                     <Button Content="+" Grid.Column="2"
-                            Width="38"
-                            Height="38"
+                            Width="32"
+                            Height="32"
                             Command="{Binding DataContext.IncrementProgressCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ListView}}}"
                             CommandParameter="{Binding}"
                             Margin="4,32,0,0"
@@ -219,7 +222,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Cursor="Hand"
-                            FontSize="24">
+                            FontSize="22">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border CornerRadius="24"
@@ -234,8 +237,8 @@
                         </Button.Template>
                     </Button>
                     <!-- '>' detail-knop -->
-                    <Button Width="64"
-                            Height="64"
+                    <Button Width="50"
+                            Height="50"
                             Content=">"
                             Command="{Binding DataContext.OpenListItemDetailViewCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"
@@ -247,11 +250,11 @@
                             Margin="10,0,0,0"
                             Cursor="Hand"
                             ToolTip="View Details and Edit Item"
-                            FontSize="32"
+                            FontSize="25"
                             Grid.Column="3">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border CornerRadius="32"
+                                <Border CornerRadius="25"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     Cursor="{TemplateBinding Cursor}"
