@@ -7,18 +7,11 @@ namespace Bookmark_App.DataAccess
     {
         public static void Initialize()
         {
-            var dbPath = DbConfig.DatabasePath;
-            bool newDatabase = !File.Exists(dbPath);
-
             using var connection = new SqliteConnection(DbConfig.ConnectionString);
             connection.Open();
 
             CreateTables(connection);
-
-            if (newDatabase)
-            {
-                SeedGenres(connection);
-            }
+            SeedGenres(connection);
         }
 
         private static void CreateTables(SqliteConnection connection)
@@ -62,24 +55,19 @@ CREATE TABLE IF NOT EXISTS item_genres (
 
         private static void SeedGenres(SqliteConnection connection)
         {
-            // simpele check: als er al genres zijn, niks doen
-            using (var checkCmd = connection.CreateCommand())
-            {
-                checkCmd.CommandText = "SELECT COUNT(*) FROM genres;";
-                long count = (long)checkCmd.ExecuteScalar();
-                if (count > 0)
-                    return;
-            }
-
             string[] defaultGenres =
             {
-            "Action", "Adventure", "Comedy", "Drama", "Fantasy",
-            "Sci-Fi", "Slice of Life", "Romance", "Horror",
-            "Mystery", "Thriller", "Sports", "Isekai"
-        };
+                "Action", "Adventure", "Comedy", "Drama", "Fantasy",
+                "Sci-Fi", "Slice of Life", "Romance", "Horror",
+                "Mystery", "Thriller", "Sports", "Isekai", "Adult",
+                "Martial Arts", "Supernatural", "Historical", "Mecha", "Music",
+                "Reincarnation", "School", "Superhuman", "Psychological", 
+                "Regression", "Time Travel", "System", "Dungeon",
+                "Seinen", "Shounen", "Shoujo", "Josei", "Villainess"
+            };
 
             using var insertCmd = connection.CreateCommand();
-            insertCmd.CommandText = "INSERT INTO genres (name) VALUES ($name);";
+            insertCmd.CommandText = "INSERT OR IGNORE INTO genres (name) VALUES ($name);";
             var nameParam = insertCmd.CreateParameter();
             nameParam.ParameterName = "$name";
             insertCmd.Parameters.Add(nameParam);
