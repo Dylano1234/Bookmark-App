@@ -256,6 +256,8 @@ namespace Bookmark_App.ViewModels
             Genre2 = null;
             Genre3 = null;
             Genre4 = null;
+            Genre5 = null;
+            Genre6 = null;
         }
         private bool ItemValidation()
         {

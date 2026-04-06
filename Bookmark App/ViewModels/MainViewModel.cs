@@ -207,6 +207,17 @@ namespace Bookmark_App.ViewModels
             {
                 ListItemDetailViewModel.CurrentListid = listVM._list.id;
             }
+
+            var byId = ListItemDetailViewModel.Genres.ToDictionary(g => g.id);
+            var noneGenre = ListItemDetailViewModel.Genres.FirstOrDefault(g => g.id == -1) ?? new Genre { id = -1, name = "None" };
+            var itemGenres = ListItemDetailViewModel.CurrentListItem.genres;
+            // Assign genres using helper
+            AssignGenreProperty(1, itemGenres, byId, noneGenre);
+            AssignGenreProperty(2, itemGenres, byId, noneGenre);
+            AssignGenreProperty(3, itemGenres, byId, noneGenre);
+            AssignGenreProperty(4, itemGenres, byId, noneGenre);
+            AssignGenreProperty(5, itemGenres, byId, noneGenre);
+            AssignGenreProperty(6, itemGenres, byId, noneGenre);
         }
         private void OpenListItemDetailViewEdit()
         {
