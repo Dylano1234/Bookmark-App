@@ -27,6 +27,9 @@ namespace Bookmark_App.DataAccess
                 case "Title Descending":
                     orderBy = "i.title COLLATE NOCASE DESC";
                     break;
+                case "Status":
+                    orderBy = "i.status ASC, i.title COLLATE NOCASE ASC";
+                    break;
                 case "Rating Ascending":
                     orderBy = "i.rating ASC";
                     break;

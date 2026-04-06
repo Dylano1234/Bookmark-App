@@ -121,11 +121,12 @@ namespace Bookmark_App.ViewModels
 
             SortingOptions.Add("Title Ascending");
             SortingOptions.Add("Title Descending");
+            SortingOptions.Add("Status");
             SortingOptions.Add("Rating Ascending");
             SortingOptions.Add("Rating Descending");
             SortingOptions.Add("Progress Ascending");
             SortingOptions.Add("Progress Descending");
-            SelectedSortingOption = "Title Ascending";
+            SelectedSortingOption = "Status";
 
             Status = ItemStatus.All;
 
@@ -139,6 +140,20 @@ namespace Bookmark_App.ViewModels
         {
             ResetCurrentPage();
             Status = status;
+            if (status == ItemStatus.All)
+            {
+                if(SelectedSortingOption == "Title Ascending")
+                {
+                    SelectedSortingOption = "Status";
+                }
+            }
+            else
+            {
+                if (SelectedSortingOption == "Status")
+                {
+                    SelectedSortingOption = "Title Ascending";
+                }
+            }
             // reload items with current filters
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
