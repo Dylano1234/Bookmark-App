@@ -543,8 +543,8 @@
                                      HorizontalAlignment="Right"
                                      FontSize="16"
                                      Foreground="White"
-                                     Background="#3A3A3A"
-                                     BorderBrush="#707070"
+                                     Background="#444"
+                                     BorderBrush="#333"
                                      Text="{Binding ImageLink, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             </TextBox>
                             <TextBlock Text="Paste image link here"
