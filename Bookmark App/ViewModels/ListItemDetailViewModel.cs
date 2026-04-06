@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -55,7 +57,13 @@ namespace Bookmark_App.ViewModels
             ItemStatus.Planning
         };
 
-        // Make these nullable and raise change notifications so the ComboBoxes update when set from code
+        private string _imageLink;
+        public string ImageLink
+        {
+            get => _imageLink;
+            set => SetProperty(ref _imageLink, value);
+        }
+
         private Genre? _genre1;
         public Genre? Genre1
         {
@@ -103,6 +111,7 @@ namespace Bookmark_App.ViewModels
         public ICommand SelectImageCommand { get; }
         public ICommand DeleteListItemCommand { get; }
         public ICommand RemoveImageCommand { get; }
+        public ICommand FetchImageCommand { get;  }
 
         private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
         private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
@@ -112,6 +121,7 @@ namespace Bookmark_App.ViewModels
             SelectImageCommand = new RelayCommand(SelectImage);
             DeleteListItemCommand = new RelayCommand(DeleteListItem);
             RemoveImageCommand = new RelayCommand(RemoveImage);
+            FetchImageCommand = new RelayCommand(FetchImage);
 
             MainViewModel = mainViewModel;
 
@@ -287,6 +297,35 @@ namespace Bookmark_App.ViewModels
             if (CurrentListItem != null)
             {
                 CurrentListItem.coverImage = null;
+            }
+        }
+        private async void FetchImage()
+        {
+            if(!(ImageLink == null || ImageLink == ""))
+            {
+                try
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+                        httpClient.DefaultRequestHeaders.Add("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
+                        httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
+                        httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+                        var imageData = await httpClient.GetByteArrayAsync(ImageLink);
+                        CoverImageData = imageData;
+                        if (CurrentListItem != null)
+                            CurrentListItem.coverImage = CoverImageData;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Invalid Image URL", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

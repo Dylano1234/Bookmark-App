@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using SixLabors.ImageSharp.PixelFormats;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -55,12 +57,20 @@ namespace Bookmark_App.ViewModels
             set => SetProperty(ref _coverPreview, value);
         }
 
+        private string _imageLink;
+        public string ImageLink
+        {
+            get => _imageLink;
+            set => SetProperty(ref _imageLink, value);
+        }
+
         public MainViewModel MainViewModel { get; }
 
         public ICommand SelectImageCommand { get; }
         public ICommand SaveListCommand { get; }
         public ICommand DeleteListCommand { get; }
         public ICommand RemoveImageCommand { get; }
+        public ICommand FetchImageCommand { get;  }
 
         public ListCreationViewModel(MainViewModel mainViewModel)
         {
@@ -68,6 +78,7 @@ namespace Bookmark_App.ViewModels
             SaveListCommand = new RelayCommand(SaveList);
             DeleteListCommand = new RelayCommand(DeleteList);
             RemoveImageCommand = new RelayCommand(RemoveImage);
+            FetchImageCommand = new RelayCommand(FetchImage);
             MainViewModel = mainViewModel;
         }
 
@@ -180,6 +191,46 @@ namespace Bookmark_App.ViewModels
         {
             CoverImageData = null;
             CoverPreview = null;
+        }
+        private async void FetchImage()
+        {
+            if (!(ImageLink == null || ImageLink == ""))
+            {
+                try
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+                        httpClient.DefaultRequestHeaders.Add("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
+                        httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
+                        httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+                        var imageData = await httpClient.GetByteArrayAsync(ImageLink);
+                        CoverImageData = imageData;
+                        var bmp = new BitmapImage();
+                        using (var ms = new MemoryStream(imageData))
+                        {
+                            bmp.BeginInit();
+                            bmp.CacheOption = BitmapCacheOption.OnLoad;
+                            bmp.StreamSource = ms;
+                            bmp.EndInit();
+                            bmp.Freeze();
+                        }
+
+                        CoverPreview = bmp;
+                        if (CurrentList != null)
+                            CurrentList.coverImage = CoverImageData;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Invalid Image URL", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
