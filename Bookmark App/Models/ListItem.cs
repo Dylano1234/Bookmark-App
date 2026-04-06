@@ -137,7 +137,7 @@ namespace Bookmark_App.Models
 
         private void RecomputeProgressText()
         {
-            ProgressText = $"{progressCurrent} / {progressMax}";
+            ProgressText = FormattableString.Invariant($"{progressCurrent} / {progressMax}");
         }
 
         // INotifyPropertyChanged
