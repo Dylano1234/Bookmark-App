@@ -517,28 +517,30 @@
                     </Border>
 
                     <!-- Upload-knop -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
                         <Button Content="Upload Image"
                                 Command="{Binding SelectImageCommand}"
-                                Padding="12,4"
+                                Padding="12,2"
                                 HorizontalAlignment="Center"
                                 Margin="0,0,10,0"
                                 Foreground="White"
                                 Background="#444"
-                                BorderBrush="#444"/>
+                                BorderBrush="#444"
+                                Height="23"/>
                         <Button Content="Remove Image"
                                 Command="{Binding RemoveImageCommand}"
-                                Padding="12,4"
+                                Padding="12,2"
                                 HorizontalAlignment="Center"
                                 Foreground="White"
                                 Background="#444"
-                                BorderBrush="#444"/>
+                                BorderBrush="#444"
+                                Height="23"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,105">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
                         <Grid>
-                            <TextBox x:Name="ImageLinkTextBox" Width="126"
-                                     Height="30"
-                                     Margin="0,5,10,5"
+                            <TextBox x:Name="ImageLinkTextBox" Width="115"
+                                     Height="23"
+                                     Margin="0,0,10,0"
                                      VerticalAlignment="Center"
                                      HorizontalAlignment="Right"
                                      FontSize="16"
@@ -549,8 +551,9 @@
                             </TextBox>
                             <TextBlock Text="Paste image link here"
                                        Foreground="Gray"
-                                       Margin="5,10,0,5"
-                                       IsHitTestVisible="False">
+                                       Margin="5,3,0,5"
+                                       IsHitTestVisible="False"
+                                       FontSize="11">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -564,14 +567,23 @@
                             </TextBlock>
                         </Grid>
                         <Button Content="Fetch Image"
-                                Height="30"
+                                Height="23"
                                 Command="{Binding FetchImageCommand}"
-                                Width="80"
                                 HorizontalAlignment="Center"
                                 Foreground="White"
                                 Background="#444"
-                                BorderBrush="#444"/>
+                                BorderBrush="#444"
+                                Padding="12,2"/>
                     </StackPanel>
+                    <Button Content="Paste Image"
+                            Command="{Binding GetImageFromClipboardCommand}"
+                            Padding="12,2"
+                            HorizontalAlignment="Right"
+                            Foreground="White"
+                            Background="#444"
+                            BorderBrush="#444"
+                            Height="23"
+                            ToolTip="Get image from clipboard"/>
                 </StackPanel>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Vertical">

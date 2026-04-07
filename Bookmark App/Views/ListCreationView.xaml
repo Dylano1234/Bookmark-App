@@ -84,7 +84,7 @@
                 <!-- Upload-knop -->
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
-                            Margin="0,0,0,10">
+                            Margin="0,0,0,5">
                     <Button Content="Upload Image"
                             Command="{Binding SelectImageCommand}"
                             Padding="12,4"
@@ -101,7 +101,7 @@
                             Background="#444"
                             BorderBrush="#444"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="0,0,0,70">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="0,0,0,5">
                     <Grid>
                         <TextBox x:Name="ImageLinkTextBox" Width="126"
                                  Height="30"
@@ -139,6 +139,16 @@
                             Background="#444"
                             BorderBrush="#444"/>
                 </StackPanel>
+                <Button Content="Paste Image"
+                        Command="{Binding GetImageFromClipboardCommand}"
+                        Padding="12,2"
+                        HorizontalAlignment="Right"
+                        Foreground="White"
+                        Background="#444"
+                        BorderBrush="#444"
+                        Height="30"
+                        ToolTip="Get image from clipboard"
+                        Margin="0,0,22,50"/>
             </StackPanel>
         </Grid>
 

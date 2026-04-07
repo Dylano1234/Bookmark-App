@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Windows;
@@ -14,7 +15,7 @@ namespace Bookmark_App.ViewModels
 {
     public partial class ListCreationViewModel : ObservableObject
     {
-        private ImageSource? _coverPreview;
+        private Byte[]? _coverPreview;
         private string? _listTitle;
 
         public string? ListTitle
@@ -51,7 +52,7 @@ namespace Bookmark_App.ViewModels
 
         public byte[]? CoverImageData { get;  set; }
 
-        public ImageSource? CoverPreview
+        public byte[]? CoverPreview
         {
             get => _coverPreview;
             set => SetProperty(ref _coverPreview, value);
@@ -71,6 +72,7 @@ namespace Bookmark_App.ViewModels
         public ICommand DeleteListCommand { get; }
         public ICommand RemoveImageCommand { get; }
         public ICommand FetchImageCommand { get;  }
+        public ICommand GetImageFromClipboardCommand { get; }
 
         public ListCreationViewModel(MainViewModel mainViewModel)
         {
@@ -79,6 +81,7 @@ namespace Bookmark_App.ViewModels
             DeleteListCommand = new RelayCommand(DeleteList);
             RemoveImageCommand = new RelayCommand(RemoveImage);
             FetchImageCommand = new RelayCommand(FetchImage);
+            GetImageFromClipboardCommand = new RelayCommand(GetImageFromClipboard);
             MainViewModel = mainViewModel;
         }
 
@@ -95,18 +98,7 @@ namespace Bookmark_App.ViewModels
             {
                 var bytes = File.ReadAllBytes(dlg.FileName);
                 CoverImageData = bytes;
-
-                var bmp = new BitmapImage();
-                using (var ms = new MemoryStream(bytes))
-                {
-                    bmp.BeginInit();
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                    bmp.StreamSource = ms;
-                    bmp.EndInit();
-                    bmp.Freeze();
-                }
-
-                CoverPreview = bmp;
+                CoverPreview = bytes;
             }
         }
 
@@ -207,17 +199,7 @@ namespace Bookmark_App.ViewModels
 
                         var imageData = await httpClient.GetByteArrayAsync(ImageLink);
                         CoverImageData = imageData;
-                        var bmp = new BitmapImage();
-                        using (var ms = new MemoryStream(imageData))
-                        {
-                            bmp.BeginInit();
-                            bmp.CacheOption = BitmapCacheOption.OnLoad;
-                            bmp.StreamSource = ms;
-                            bmp.EndInit();
-                            bmp.Freeze();
-                        }
-
-                        CoverPreview = bmp;
+                        CoverPreview = imageData;
                         if (CurrentList != null)
                             CurrentList.coverImage = CoverImageData;
                     }
@@ -230,6 +212,32 @@ namespace Bookmark_App.ViewModels
             else
             {
                 MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void GetImageFromClipboard()
+        {
+            if (Clipboard.ContainsImage())
+            {
+                var bitmapSource = Clipboard.GetImage();
+
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 100;
+                byte[] bit = new byte[0];
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                    encoder.Save(stream);
+                    bit = stream.ToArray();
+                    stream.Close();
+                }
+                CoverPreview = bit;
+                CoverImageData = bit;
+                if (CurrentList != null)
+                    CurrentList.coverImage = CoverImageData;
+            }
+            else
+            {
+                MessageBox.Show("Clipboard does not contain an image.", "No Image in Clipboard", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

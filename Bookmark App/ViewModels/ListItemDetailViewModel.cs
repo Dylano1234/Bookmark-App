@@ -112,6 +112,7 @@ namespace Bookmark_App.ViewModels
         public ICommand DeleteListItemCommand { get; }
         public ICommand RemoveImageCommand { get; }
         public ICommand FetchImageCommand { get;  }
+        public ICommand GetImageFromClipboardCommand { get;  }
 
         private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
         private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
@@ -122,6 +123,7 @@ namespace Bookmark_App.ViewModels
             DeleteListItemCommand = new RelayCommand(DeleteListItem);
             RemoveImageCommand = new RelayCommand(RemoveImage);
             FetchImageCommand = new RelayCommand(FetchImage);
+            GetImageFromClipboardCommand = new RelayCommand(GetImageFromClipboard);
 
             MainViewModel = mainViewModel;
 
@@ -328,6 +330,32 @@ namespace Bookmark_App.ViewModels
             else
             {
                 MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void GetImageFromClipboard()
+        {
+            if (Clipboard.ContainsImage())
+            {
+                var bitmapSource = Clipboard.GetImage();
+
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 100;
+                byte[] bit = new byte[0];
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                    encoder.Save(stream);
+                    bit = stream.ToArray();
+                    stream.Close();
+                }
+
+                CoverImageData = bit;
+                if (CurrentListItem != null)
+                    CurrentListItem.coverImage = CoverImageData;
+            }
+            else
+            {
+                MessageBox.Show("Clipboard does not contain an image.", "No Image in Clipboard", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

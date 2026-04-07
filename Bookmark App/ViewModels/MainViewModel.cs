@@ -291,16 +291,7 @@ namespace Bookmark_App.ViewModels
             CreateListViewModel.CoverImageData = currentList.coverImage;
             if (currentList.coverImage != null)
             {
-                var bmp = new BitmapImage();
-                using (var ms = new MemoryStream(currentList.coverImage))
-                {
-                    bmp.BeginInit();
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                    bmp.StreamSource = ms;
-                    bmp.EndInit();
-                    bmp.Freeze();
-                }
-                CreateListViewModel.CoverPreview = bmp;
+                CreateListViewModel.CoverPreview = currentList.coverImage;
             }
             IsCreateListOpen = true;
         }
