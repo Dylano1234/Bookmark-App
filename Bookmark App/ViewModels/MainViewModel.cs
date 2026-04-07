@@ -281,6 +281,7 @@ namespace Bookmark_App.ViewModels
                 listVM.LoadItems(listVM._list, listVM.SelectedGenreSortOption, listVM.SelectedSortingOption, listVM.FilteringTitle, listVM.Status, listVM.ItemsPerPage, (int)listVM.CurrentPage);
             }
             ListItemDetailViewModel.ResetGenres();
+            ListItemDetailViewModel.ImageLink = string.Empty;
         }
         private void OpenEditList(Models.List currentList)
         {

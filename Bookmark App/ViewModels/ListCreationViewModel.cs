@@ -121,6 +121,7 @@ namespace Bookmark_App.ViewModels
             ListTitle = string.Empty;
             CoverImageData = null;
             CoverPreview = null;
+            ImageLink = string.Empty;
             MainViewModel.CloseCreateList();
             MainViewModel.LoadLists();
         }
@@ -176,6 +177,7 @@ namespace Bookmark_App.ViewModels
             ListTitle = string.Empty;
             CoverImageData = null;
             CoverPreview = null;
+            ImageLink = string.Empty;
             MainViewModel.CloseCreateList();
             MainViewModel.LoadLists();
         }

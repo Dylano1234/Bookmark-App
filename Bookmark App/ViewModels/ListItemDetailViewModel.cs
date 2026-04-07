@@ -195,6 +195,7 @@ namespace Bookmark_App.ViewModels
                 MainViewModel.CloseListItemDetailView();
             }
             ResetGenres();
+            ImageLink = string.Empty;
         }
         private void DeleteListItem()
         {
@@ -214,6 +215,7 @@ namespace Bookmark_App.ViewModels
 
                 _itemService.DeleteItem(CurrentListItem);
                 MainViewModel.CloseListItemDetailView();
+                ImageLink = string.Empty;
             }
         }
         private void SelectImage()
