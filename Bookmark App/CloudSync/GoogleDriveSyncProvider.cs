@@ -20,28 +20,6 @@ namespace Bookmark_App.CloudSync
             _drive = drive ?? throw new ArgumentNullException(nameof(drive));
         }
 
-        /// <summary>
-        /// Ensures a Drive folder exists and returns its folderId.
-        /// Uses SyncStateStore to persist the folderId.
-        /// </summary>
-        public async Task<string> EnsureSyncFolderAsync(CancellationToken ct = default)
-        {
-            var state = SyncStateStore.LoadOrCreate();
-
-            // appDataFolder is a special Google Drive folder that Google provides
-            // for your app. You don't need to search for it or create it.
-            // Just reference the special ID "appDataFolder"
-            const string appDataFolderId = "appDataFolder";
-
-            if (string.IsNullOrWhiteSpace(state.DriveFolderId))
-            {
-                state.DriveFolderId = appDataFolderId;
-                SyncStateStore.Save(state);
-            }
-
-            return appDataFolderId;
-        }
-
         public async Task UploadSnapshotAndManifestAsync(
             string localSnapshotPath,
             string localManifestPath,
@@ -54,7 +32,7 @@ namespace Bookmark_App.CloudSync
             if (!File.Exists(localManifestPath))
                 throw new FileNotFoundException("Manifest file not found.", localManifestPath);
 
-            var folderId = await EnsureSyncFolderAsync(ct);
+            var folderId = "appDataFolder";
             var state = SyncStateStore.LoadOrCreate();
             try
             {
@@ -121,7 +99,7 @@ namespace Bookmark_App.CloudSync
             if (string.IsNullOrWhiteSpace(state.DriveManifestFileId))
             {
                 // Try to find the manifest file in the sync folder
-                var folderId = await EnsureSyncFolderAsync(ct);
+                var folderId = "appDataFolder";
                 state.DriveManifestFileId = await TryFindFileIdInFolderAsync(folderId, ManifestFileName, ct);
                 
                 if (string.IsNullOrWhiteSpace(state.DriveManifestFileId))
@@ -143,7 +121,7 @@ namespace Bookmark_App.CloudSync
             if (string.IsNullOrWhiteSpace(state.DriveSnapshotFileId))
             {
                 // Try to find the snapshot file in the sync folder
-                var folderId = await EnsureSyncFolderAsync(ct);
+                var folderId = "appDataFolder";
                 state.DriveSnapshotFileId = await TryFindFileIdInFolderAsync(folderId, SnapshotFileName, ct);
                 
                 if (string.IsNullOrWhiteSpace(state.DriveSnapshotFileId))
