@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Bookmark_App.ViewModels
 {
@@ -44,7 +45,22 @@ namespace Bookmark_App.ViewModels
                     SetSelectedSortingOptionCommand.Execute(value);
             }
         }
-        public string FilteringTitle { get; set; }
+
+        private string? _filteringTitle;
+        public string? FilteringTitle
+        {
+            get => _filteringTitle;
+            set
+            {
+                if (_filteringTitle == value) return;
+                _filteringTitle = value;
+                OnPropertyChanged(nameof(FilteringTitle));
+                
+                // Reset and start the debounce timer on each change
+                _filterDebounceTimer.Stop();
+                _filterDebounceTimer.Start();
+            }
+        }
 
         public ItemStatus Status
         {
@@ -93,10 +109,11 @@ namespace Bookmark_App.ViewModels
         private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
         private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
 
+        private readonly DispatcherTimer _filterDebounceTimer;
+
         public ICommand SetStatusCommand { get; }
         public ICommand SetSelectedGenreSortOptionCommand { get; }
         public ICommand SetSelectedSortingOptionCommand { get; }
-        public ICommand SetFilteringTitleCommand { get; }
         public ICommand OpenCreateListItemCommand { get; }
         public ICommand FirstPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
@@ -108,11 +125,16 @@ namespace Bookmark_App.ViewModels
         {
             CurrentPage = 1;
             _list = list;
+            
+            // Initialize the debounce timer for filtering
+            _filterDebounceTimer = new DispatcherTimer();
+            _filterDebounceTimer.Interval = TimeSpan.FromSeconds(1);
+            _filterDebounceTimer.Tick += FilterDebounceTimer_Tick;
+
             SetStatusCommand = new RelayCommand<ItemStatus>(SetStatus);
             OpenCreateListItemCommand = new RelayCommand(OpenCreateListItem);
             SetSelectedGenreSortOptionCommand = new RelayCommand<Genre>(SetSelectedGenreSortOption);
             SetSelectedSortingOptionCommand = new RelayCommand<string>(SetSelectedSortingOption);
-            SetFilteringTitleCommand = new RelayCommand<string>(SetFilteringTitle);
             FirstPageCommand = new RelayCommand(FirstPage);
             PreviousPageCommand = new RelayCommand(PreviousPage);
             NextPageCommand = new RelayCommand(NextPage);
@@ -198,14 +220,16 @@ namespace Bookmark_App.ViewModels
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
 
-        private void SetFilteringTitle(string title)
+        private void FilterDebounceTimer_Tick(object sender, EventArgs e)
         {
+            _filterDebounceTimer.Stop();
+            
+            // Execute the actual filter logic
             ResetCurrentPage();
-            FilteringTitle = title;
-            FilteringTitle = FilteringTitle.Trim();
-            // reload items with new title search
-            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            var trimmedTitle = FilteringTitle?.Trim() ?? "";
+            LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, trimmedTitle, Status, ItemsPerPage, (int)CurrentPage);
         }
+
         private void FirstPage()
         {
             CurrentPage = 1;

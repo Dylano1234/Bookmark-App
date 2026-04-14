@@ -209,13 +209,6 @@
                                  Background="#3A3A3A"
                                  BorderBrush="#707070"
                                  Text="{Binding FilteringTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <!-- Pressing Enter while focused will execute SetFilteringTitleCommand with the current Text -->
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Enter"
-                                            Command="{Binding SetFilteringTitleCommand}"
-                                            CommandParameter="{Binding Text,
-                                           ElementName=FilterTextBox}"/>
-                            </TextBox.InputBindings>
                         </TextBox>
                         <TextBlock Text="Search by Title"
                                    Foreground="Gray"
