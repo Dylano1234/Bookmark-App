@@ -10,7 +10,6 @@
         public DateTime? LastSyncedUtc { get; set; }
 
         // Google Drive bookkeeping
-        public string? DriveFolderId { get; set; }
         public string? DriveSnapshotFileId { get; set; }
         public string? DriveManifestFileId { get; set; }
 

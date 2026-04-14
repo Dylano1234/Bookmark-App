@@ -10,15 +10,10 @@ namespace Bookmark_App.CloudSync
     public static class GoogleDriveAuth
     {
         // Least-privilege scope: only files your app creates/opens.
-        private static readonly string[] Scopes = { DriveService.Scope.DriveFile };
+        private static readonly string[] Scopes = { DriveService.Scope.DriveAppdata };
         private const string AppName = "Bookmark App";
         private const string ClientSecretsFileName = "client_secret.json";
 
-        /// <summary>
-        /// Token directory next to the exe: ./_tokens/
-        /// WARNING: If your app is installed under Program Files, this may fail due to permissions.
-        /// In that case, switch to AppData (recommended).
-        /// </summary>
         public static string TokenDirNextToExe =>
             Path.Combine(DbConfig.AppDataRoot, "_tokens");
 
