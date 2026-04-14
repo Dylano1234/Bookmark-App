@@ -119,12 +119,26 @@
                             BorderBrush="Transparent"
                             ToolTip="Open link"
                             Cursor="Hand">
-
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <!-- Collapsed when null -->
+                                    <DataTrigger Binding="{Binding url}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <!-- Collapsed when empty string -->
+                                    <DataTrigger Binding="{Binding url}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <TextBlock Text="↗"
-                                    FontSize="28"
-                                    FontWeight="Bold"
-                                    Foreground="#AAAAAA"
-                                    VerticalAlignment="Center"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#AAAAAA"
+                                   VerticalAlignment="Center"
                                    Margin="0,0,0,0"/>
                         <Button.Template>
                             <!-- Use a Border bound to the Button.Background so the control has a hit-testable area even when Background is Transparent -->
