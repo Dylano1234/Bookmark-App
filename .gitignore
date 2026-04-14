@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Bookmark App/ClassDiagram1.cd
+/Bookmark App/ModelClassDiagram.cd
+/Bookmark App/RepositoryClassDiagram.cd
+/Bookmark App/ViewModelClassDiagram.cd

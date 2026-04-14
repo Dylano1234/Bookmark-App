@@ -12,8 +12,6 @@ namespace Bookmark_App.CloudSync
         private readonly DriveService _drive;
         private static readonly SemaphoreSlim _syncMutex = new(1, 1);
 
-        // Folder name on Drive (visible). Change if you want.
-        private const string FolderName = "Bookmark App Sync";
         private const string SnapshotFileName = "bookmark.snapshot.db";
         private const string ManifestFileName = "bookmark.manifest.json";
 
@@ -30,40 +28,18 @@ namespace Bookmark_App.CloudSync
         {
             var state = SyncStateStore.LoadOrCreate();
 
-            if (!string.IsNullOrWhiteSpace(state.DriveFolderId))
-            {
-                // Optional: could verify it exists. For personal use, usually not needed.
-                return state.DriveFolderId!;
-            }
+            // appDataFolder is a special Google Drive folder that Google provides
+            // for your app. You don't need to search for it or create it.
+            // Just reference the special ID "appDataFolder"
+            const string appDataFolderId = "appDataFolder";
 
-            // Try find existing folder by name
-            var list = _drive.Files.List();
-            list.Q = $"mimeType='application/vnd.google-apps.folder' and name='{FolderName}' and trashed=false";
-            list.Fields = "files(id,name)";
-            var found = await list.ExecuteAsync(ct);
-
-            var folder = found.Files?.FirstOrDefault();
-            if (folder != null)
+            if (string.IsNullOrWhiteSpace(state.DriveFolderId))
             {
-                state.DriveFolderId = folder.Id;
+                state.DriveFolderId = appDataFolderId;
                 SyncStateStore.Save(state);
-                return folder.Id;
             }
 
-            // Create new folder
-            var folderMeta = new DriveFile
-            {
-                Name = FolderName,
-                MimeType = "application/vnd.google-apps.folder"
-            };
-
-            var create = _drive.Files.Create(folderMeta);
-            create.Fields = "id";
-            var created = await create.ExecuteAsync(ct);
-
-            state.DriveFolderId = created.Id;
-            SyncStateStore.Save(state);
-            return created.Id;
+            return appDataFolderId;
         }
 
         public async Task UploadSnapshotAndManifestAsync(
@@ -296,14 +272,22 @@ namespace Bookmark_App.CloudSync
             catch (Exception ex)
             {
                 // Real failure
-                throw new IOException("Drive update failed.", ex);
+                throw new IOException($"Drive file operation failed: {ex.Message}", ex);
             }
         }
 
         private async Task<string?> TryFindFileIdInFolderAsync(string folderId, string fileName, CancellationToken ct)
         {
             var list = _drive.Files.List();
-            list.Q = $"'{folderId}' in parents and name='{fileName}' and trashed=false";
+
+            // When searching appDataFolder, the standard query should work
+            // But add trashed=false explicitly to ensure it's excluded
+            if (folderId == "appDataFolder")
+            {
+                list.Q = $"name='{fileName}' and trashed=false";
+                list.Spaces = "appDataFolder"; // Explicitly scope to appDataFolder
+            }
+
             list.Fields = "files(id,name)";
             var result = await list.ExecuteAsync(ct);
             return result.Files?.FirstOrDefault()?.Id;
