@@ -27,11 +27,19 @@ namespace Bookmark_App.Views
 
         private void ListView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // Hook into Items collection changes to reset scroll position
+            // Hook into the ViewModel to provide scroll-to-top functionality
             if (DataContext is ListViewModel viewModel)
             {
-                viewModel.Items.CollectionChanged += (s, args) => ContentScrollViewer.ScrollToTop();
+                viewModel.ScrollToTopRequested += ScrollToTop;
             }
+        }
+
+        /// <summary>
+        /// Scrolls the content area to the top
+        /// </summary>
+        public void ScrollToTop()
+        {
+            ContentScrollViewer.ScrollToHome();
         }
     }
 }

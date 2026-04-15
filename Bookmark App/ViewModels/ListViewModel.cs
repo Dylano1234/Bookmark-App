@@ -121,6 +121,19 @@ namespace Bookmark_App.ViewModels
         public ICommand LastPageCommand { get; }
         public ICommand IncrementProgressCommand { get; }
 
+        /// <summary>
+        /// Event raised when scroll-to-top is requested
+        /// </summary>
+        public event Action? ScrollToTopRequested;
+
+        /// <summary>
+        /// Calls scroll-to-top in the view
+        /// </summary>
+        private void RequestScrollToTop()
+        {
+            ScrollToTopRequested?.Invoke();
+        }
+
         public ListViewModel(Models.List list)
         {
             CurrentPage = 1;
@@ -178,6 +191,7 @@ namespace Bookmark_App.ViewModels
             }
             // reload items with current filters
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
 
         private void OpenCreateListItem()
@@ -211,6 +225,7 @@ namespace Bookmark_App.ViewModels
             SelectedGenreSortOption = genre;
             // reload items with new genre filter
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
 
         private void SetSelectedSortingOption(string sortingOption)
@@ -218,6 +233,7 @@ namespace Bookmark_App.ViewModels
             SelectedSortingOption = sortingOption;
             // reload items with new sorting
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
 
         private void FilterDebounceTimer_Tick(object sender, EventArgs e)
@@ -228,12 +244,14 @@ namespace Bookmark_App.ViewModels
             ResetCurrentPage();
             var trimmedTitle = FilteringTitle?.Trim() ?? "";
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, trimmedTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
 
         private void FirstPage()
         {
             CurrentPage = 1;
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
         private void PreviousPage()
         {
@@ -243,6 +261,7 @@ namespace Bookmark_App.ViewModels
             }
             CurrentPage--;
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
         private void NextPage()
         {
@@ -252,11 +271,13 @@ namespace Bookmark_App.ViewModels
             }
             CurrentPage++;
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
         private void LastPage()
         {
             CurrentPage = TotalPages;
             LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+            RequestScrollToTop();
         }
         private void LoadPageNumbers()
         {
