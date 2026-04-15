@@ -387,7 +387,7 @@
             </Viewbox>
         </Border>
         <Border Grid.Row="2" MinHeight="60" Margin="8,0,8,0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
+            <ScrollViewer x:Name="ContentScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
                 <!-- Use a Grid to show either the ItemsControl or a 'No Items found' message -->
                 <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Top" HorizontalAlignment="Center">
                     <Grid>

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Bookmark_App.ViewModels;
 
 namespace Bookmark_App.Views
 {
@@ -21,6 +22,16 @@ namespace Bookmark_App.Views
         public ListView()
         {
             InitializeComponent();
+            this.DataContextChanged += ListView_DataContextChanged;
+        }
+
+        private void ListView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Hook into Items collection changes to reset scroll position
+            if (DataContext is ListViewModel viewModel)
+            {
+                viewModel.Items.CollectionChanged += (s, args) => ContentScrollViewer.ScrollToTop();
+            }
         }
     }
 }
