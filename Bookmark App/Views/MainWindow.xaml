@@ -222,7 +222,7 @@
                         </Grid.Style>
                         <Viewbox Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Center" HorizontalAlignment="Center"
                                  Margin="50,50,50,50">
-                            <Border Width="500"
+                            <Border 
                                     Padding="20"
                                     Background="#292929"
                                     CornerRadius="12"

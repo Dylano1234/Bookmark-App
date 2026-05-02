@@ -37,7 +37,8 @@
             <!-- Rechter kant: uploadvak -->
             <StackPanel Grid.Column="1"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
+                        HorizontalAlignment="Right"
+                        Margin="0,0,15,0">
 
                 <!-- Vak met afbeelding of placeholder -->
                 <Border Width="260"
