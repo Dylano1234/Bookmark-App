@@ -17,6 +17,7 @@ namespace Bookmark_App.Views
             DataContext = new MainViewModel();
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
+            SourceInitialized += OnSourceInitialized;
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -34,7 +35,7 @@ namespace Bookmark_App.Views
 
             e.Cancel = true; // prevent immediate shutdown
 
-            
+
 
             if (DataContext is MainViewModel vm)
             {
@@ -51,6 +52,25 @@ namespace Bookmark_App.Views
         {
             _allowClose = true;
             Application.Current.Shutdown();
+        }
+
+        private void OnSourceInitialized(object sender, System.EventArgs e)
+        {
+            var workArea = SystemParameters.WorkArea;
+
+            double maxWidth = workArea.Width * 0.7;   // use 70% of screen
+            double width = maxWidth;
+            double height = width / (16.0 / 8.75);
+
+            // If height is too large, scale based on height instead
+            if (height > workArea.Height * 0.7)
+            {
+                height = workArea.Height * 0.7;
+                width = height * (16.0 / 8.75);
+            }
+
+            Width = width;
+            Height = height;
         }
     }
 }
