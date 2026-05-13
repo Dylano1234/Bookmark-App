@@ -4,8 +4,8 @@ namespace Bookmark_App.Services
 {
     public class GenreService
     {
-        private readonly DataAccess.GenreRepository _genreRepository;
-        public GenreService(GenreRepository genreRepository)
+        private readonly IGenreRepository _genreRepository;
+        public GenreService(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
         }

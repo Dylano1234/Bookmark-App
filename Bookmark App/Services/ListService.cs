@@ -5,10 +5,10 @@ namespace Bookmark_App.Services
 {
     public class ListService
     {
-        private readonly ListRepository _listRepo;
-        private readonly ItemRepository _itemRepo;
+        private readonly IListRepository _listRepo;
+        private readonly IItemRepository _itemRepo;
 
-        public ListService(ListRepository listRepo, ItemRepository itemRepo)
+        public ListService(IListRepository listRepo, IItemRepository itemRepo)
         {
             _listRepo = listRepo;
             _itemRepo = itemRepo;

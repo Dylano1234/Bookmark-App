@@ -1,12 +1,13 @@
-﻿using Bookmark_App.Models;
+﻿using Bookmark_App.DataAccess;
+using Bookmark_App.Models;
 
 namespace Bookmark_App.Services
 {
     public class ItemService
     {
-        private readonly DataAccess.ItemRepository _itemRepo;
+        private readonly IItemRepository _itemRepo;
         //private readonly Services.ImageService _imageService;
-        public ItemService(DataAccess.ItemRepository itemRepo)
+        public ItemService(IItemRepository itemRepo)
         {
             _itemRepo = itemRepo;
 

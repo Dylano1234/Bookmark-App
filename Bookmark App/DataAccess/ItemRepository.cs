@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Bookmark_App.DataAccess
 {
-    public class ItemRepository
+    public class ItemRepository : IItemRepository
     {
         public List<ListItem> GetAllByList(List list, Genre genreFilter, string sort, string titleSearch, ItemStatus status, int itemsPerPage, int currentPage)
         {

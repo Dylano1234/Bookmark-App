@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Bookmark_App.DataAccess
 {
-    public class ListRepository
+    public class ListRepository : IListRepository
     {
         public List<List> GetAll()
         {
@@ -93,6 +93,7 @@ namespace Bookmark_App.DataAccess
                 SyncCoordinator.NotifyDbChanged?.Invoke();
             }
         }
+
         public void Delete(List list)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));

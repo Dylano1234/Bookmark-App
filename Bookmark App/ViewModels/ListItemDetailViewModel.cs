@@ -99,6 +99,7 @@ namespace Bookmark_App.ViewModels
             get => _genre5;
             set => SetProperty(ref _genre5, value);
         }
+
         private Genre? _genre6;
         public Genre? Genre6
         {
@@ -115,10 +116,13 @@ namespace Bookmark_App.ViewModels
         public ICommand FetchImageCommand { get;  }
         public ICommand GetImageFromClipboardCommand { get;  }
 
-        private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
-        private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
-        public ListItemDetailViewModel(MainViewModel mainViewModel)
+        private readonly Services.ItemService _itemService;
+        private readonly Services.GenreService _genreService;
+
+        public ListItemDetailViewModel(MainViewModel mainViewModel, ItemService itemService, GenreService genreService)
         {
+            _itemService = itemService;
+            _genreService = genreService;
             SaveListItemCommand = new RelayCommand(SaveListItem);
             SelectImageCommand = new RelayCommand(SelectImage);
             DeleteListItemCommand = new RelayCommand(DeleteListItem);
@@ -163,14 +167,14 @@ namespace Bookmark_App.ViewModels
                     CurrentListItem.genres.Add(Genre4);
                 }
             }
-            if(Genre5 != null)
+            if (Genre5 != null)
             {
                 if (Genre5.id != -1)
                 {
                     CurrentListItem.genres.Add(Genre5);
                 }
             }
-            if(Genre6 != null)
+            if (Genre6 != null)
             {
                 if (Genre6.id != -1)
                 {

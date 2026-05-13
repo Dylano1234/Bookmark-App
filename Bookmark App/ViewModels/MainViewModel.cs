@@ -22,6 +22,8 @@ namespace Bookmark_App.ViewModels
         private ObservableObject currentViewModel;
 
         private readonly ListService _listService;
+        private readonly ItemService _itemService;
+        private readonly GenreService _genreService;
         public DriveService? _drive;
         private SyncDebounceScheduler? _syncScheduler;
 
@@ -98,12 +100,18 @@ namespace Bookmark_App.ViewModels
 
         public MainViewModel()
         {
-            ListService listService = new ListService(new DataAccess.ListRepository(), new DataAccess.ItemRepository());
-            _listService = listService;
+            IListRepository listRepo = new ListRepository();
+            IItemRepository itemRepo = new ItemRepository();
+            IGenreRepository genreRepo = new GenreRepository();
+
+            _listService = new ListService(listRepo, itemRepo);
+            _itemService = new ItemService(itemRepo);
+            _genreService = new GenreService(genreRepo);
+
             LoadLists();
 
             CreateListViewModel = new ListCreationViewModel(this);
-            ListItemDetailViewModel = new ListItemDetailViewModel(this);
+            ListItemDetailViewModel = new ListItemDetailViewModel(this, _itemService, _genreService);
             SyncChoiceViewModel = new SyncChoiceViewModel(this);
             ExitSyncViewModel = new ExitSyncViewModel(this);
 
@@ -137,7 +145,7 @@ namespace Bookmark_App.ViewModels
 
             // Start op Home
 
-            CurrentViewModel = new HomeViewModel(listService);
+            CurrentViewModel = new HomeViewModel(_listService);
         }
 
         public void LoadLists()
@@ -169,7 +177,7 @@ namespace Bookmark_App.ViewModels
         private void OpenList(List list)
         {
             if (list == null) return;
-            CurrentViewModel = new ListViewModel(list);
+            CurrentViewModel = new ListViewModel(list, _itemService, _genreService);
         }
         private void OpenHome()
         {

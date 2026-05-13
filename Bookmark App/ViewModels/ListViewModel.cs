@@ -1,4 +1,5 @@
 ﻿using Bookmark_App.Models;
+using Bookmark_App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -102,12 +103,11 @@ namespace Bookmark_App.ViewModels
         }
         public int ItemsPerPage { get; set; } = 20;
 
-
         // Changed to ObservableCollection so UI updates when items change
         public ObservableCollection<Models.ListItem> Items { get; } = new ObservableCollection<Models.ListItem>();
 
-        private readonly Services.ItemService _itemService = new Services.ItemService(new DataAccess.ItemRepository());
-        private readonly Services.GenreService _genreService = new Services.GenreService(new DataAccess.GenreRepository());
+        private readonly Services.ItemService _itemService;
+        private readonly Services.GenreService _genreService;
 
         private readonly DispatcherTimer _filterDebounceTimer;
 
@@ -134,8 +134,10 @@ namespace Bookmark_App.ViewModels
             ScrollToTopRequested?.Invoke();
         }
 
-        public ListViewModel(Models.List list)
+        public ListViewModel(Models.List list, ItemService itemService, GenreService genreService)
         {
+            _itemService = itemService;
+            _genreService = genreService;
             CurrentPage = 1;
             _list = list;
             
