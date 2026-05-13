@@ -1,4 +1,5 @@
 ﻿using Bookmark_App.Models;
+using Bookmark_App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
@@ -133,7 +134,6 @@ namespace Bookmark_App.ViewModels
         {
             if (CurrentListItem == null) return;
             
-
             CurrentListItem.genres.Clear();
             if (Genre1 != null) 
             { 
@@ -178,22 +178,27 @@ namespace Bookmark_App.ViewModels
                 }
             }
 
-            if (ItemValidation())
+            ValidationResult result;
+            if (IsEditMode && !IsNewItem)
+            {
+                result = _itemService.UpdateItem(CurrentListItem);
+            }
+            else if (IsEditMode && IsNewItem)
+            {
+                result = _itemService.AddItem(CurrentListItem, (int)CurrentListid);
+            }
+            else
             {
                 return;
             }
 
-            if (IsEditMode && !IsNewItem)
+            if (!result.IsSuccess)
             {
-                _itemService.UpdateItem(CurrentListItem);
-                MainViewModel.CloseListItemDetailView();
+                MessageBox.Show("Please correct the following errors:\n" + result.ErrorMessage, "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            }
-            else if (IsEditMode && IsNewItem)
-            {
-                _itemService.AddItem(CurrentListItem, (int)CurrentListid);
-                MainViewModel.CloseListItemDetailView();
-            }
+            MainViewModel.CloseListItemDetailView();
             ResetGenres();
             ImageLink = string.Empty;
         }
@@ -263,40 +268,7 @@ namespace Bookmark_App.ViewModels
             Genre5 = null;
             Genre6 = null;
         }
-        private bool ItemValidation()
-        {
-            bool hasErrors = false;
-            string errorMessage = "Please correct the following errors:\n";
 
-            // Ignore the "None" option which is represented by id == -1 when checking for duplicates.
-            bool hasDuplicate = CurrentListItem.genres
-                .Where(g => g != null && g.id != -1)
-                .GroupBy(g => g.id)
-                .Any(group => group.Count() > 1);
-
-            if (string.IsNullOrWhiteSpace(CurrentListItem.title))
-            {
-                hasErrors = true;
-                errorMessage += "- Title is required.\n";
-            }
-            if (CurrentListItem.rating != 0 &&
-               (CurrentListItem.rating < 1 || CurrentListItem.rating > 10))
-            {
-                hasErrors = true;
-                errorMessage += "- Rating must either be 0 or between 1 and 10.\n";
-            }
-            if (hasDuplicate)
-            {
-                hasErrors = true;
-                errorMessage += "- Duplicate genres selected.\n";
-            }
-
-            if (hasErrors)
-            {
-                MessageBox.Show(errorMessage, "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            return hasErrors;
-        }
         private void RemoveImage() 
         { 
             CoverImageData = null;

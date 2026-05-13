@@ -2,13 +2,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
-using SixLabors.ImageSharp.PixelFormats;
-using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Bookmark_App.ViewModels
@@ -104,20 +101,24 @@ namespace Bookmark_App.ViewModels
 
         private void SaveList()
         {
-            if (!CanSaveList())
-            {
-                return; 
-            }
             var listService = new ListService(new DataAccess.ListRepository(), new DataAccess.ItemRepository());
+            
+            ValidationResult result;
             if (IsNewList)
             {
-                
-                listService.CreateList(ListTitle.Trim(), CoverImageData);
+                result = listService.CreateList(ListTitle.Trim(), CoverImageData, out var createdList);
             }
             else
             {
-                listService.UpdateList(CurrentList, ListTitle.Trim(), CoverImageData);
+                result = listService.UpdateList(CurrentList, ListTitle.Trim(), CoverImageData);
             }
+
+            if (!result.IsSuccess)
+            {
+                System.Windows.MessageBox.Show($"Please correct the following errors:\n{result.ErrorMessage}", "Validation Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                return;
+            }
+
             ListTitle = string.Empty;
             CoverImageData = null;
             CoverPreview = null;
@@ -125,40 +126,7 @@ namespace Bookmark_App.ViewModels
             MainViewModel.CloseCreateList();
             MainViewModel.LoadLists();
         }
-        private bool CanSaveList()
-        {
-            bool canSave = true;
-            string errorMessage = "Please correct the following errors:\n";
-            var listService = new ListService(new DataAccess.ListRepository(), new DataAccess.ItemRepository());
-            List<Models.List> AllLists = listService.GetAllLists();
-            bool titleExists = AllLists.Any(l =>
-                 l.title.Equals(ListTitle, StringComparison.OrdinalIgnoreCase));
-            if (string.IsNullOrWhiteSpace(ListTitle))
-            {
-                errorMessage += "- List title cannot be empty.\n";
-                canSave = false;
-            }
-            if(CurrentList != null)
-            {
-                if (titleExists && ListTitle != CurrentList.title)
-                {
-                    errorMessage += "- A list with this title already exists. Please choose a different title.\n";
-                    canSave = false;
-                }
-            } 
-            else if (titleExists)
-            {
-                errorMessage += "- A list with this title already exists. Please choose a different title.\n";
-                canSave = false;
-            }
-            
 
-            if (!canSave)
-            {
-                System.Windows.MessageBox.Show(errorMessage, "Validation Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
-            }
-            return canSave;
-        }
         private void DeleteList()
         {
             var result = MessageBox.Show(
