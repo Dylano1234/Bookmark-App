@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Bookmark App.Tests/Bookmark App.Tests.csproj" Id="48c073ad-6a82-4698-a203-9ac210f65cb2" />
   <Project Path="Bookmark App/Bookmark App.csproj" />
 </Solution>
