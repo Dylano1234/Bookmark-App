@@ -550,7 +550,12 @@ namespace Bookmark_App.ViewModels
         {
             // If sync is blocked (keep local / cloud ahead), just exit immediately
             var state = SyncStateManager.Current;
-            if (!IsLoggedIn || !state.IsAutoSyncEnabled || !state.IsLocalDirty)
+            
+            // Check if a sync is already in progress OR if we have pending changes to sync
+            bool isSyncInProgress = _syncScheduler?.IsSyncInProgress ?? false;
+            bool hasPendingSync = (IsLoggedIn && state.IsAutoSyncEnabled && state.IsLocalDirty) || isSyncInProgress;
+
+            if (!hasPendingSync)
             {
                 RequestShutdown();
                 return;

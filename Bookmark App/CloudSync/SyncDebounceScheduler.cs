@@ -11,12 +11,27 @@
 
         private CancellationTokenSource? _debounceCts;
         private CancellationTokenSource? _maxWaitCts;
+        private Task? _currentSyncTask;
 
         private bool _maxWaitRunning;
         private bool _syncInProgress;
         private bool _pendingChangeWhileSyncing;
 
         private bool _disposed;
+
+        /// <summary>
+        /// Exposed to allow callers to detect if a sync is currently running.
+        /// </summary>
+        public bool IsSyncInProgress
+        {
+            get
+            {
+                lock (_gate)
+                {
+                    return _syncInProgress;
+                }
+            }
+        }
 
         public SyncDebounceScheduler(
             Func<CancellationToken, Task> syncActionAsync,
@@ -72,12 +87,40 @@
                 _ = MaxWaitTimerAsync(maxWaitLocalToStart.Token);
         }
 
-        /// <summary>Manual "Sync now". Cancels timers and runs sync immediately.</summary>
-        public Task SyncNowAsync(CancellationToken ct = default)
+        /// <summary>
+        /// Manual "Sync now". Cancels timers and runs sync immediately.
+        /// If a sync is already in progress, waits for it to complete.
+        /// </summary>
+        public async Task SyncNowAsync(CancellationToken ct = default)
         {
             ThrowIfDisposed();
+            
             CancelTimers();
-            return TriggerSyncAsync(ct);
+
+            // Wait for any ongoing sync to complete first
+            Task? taskToAwait = null;
+            lock (_gate)
+            {
+                if (_syncInProgress && _currentSyncTask != null)
+                {
+                    taskToAwait = _currentSyncTask;
+                }
+            }
+
+            if (taskToAwait != null)
+            {
+                try
+                {
+                    await taskToAwait;
+                }
+                catch
+                {
+                    // Sync failed, but we still want to continue
+                }
+            }
+
+            // Now trigger a new sync
+            await TriggerSyncAsync(ct);
         }
 
         private async Task DebounceTimerAsync(CancellationToken ct)
@@ -116,8 +159,15 @@
                 // Cancel timers for this burst
                 CancelTimers();
 
+                // Create a task for the sync and store it
+                var syncTask = _syncActionAsync(externalCt);
+                lock (_gate)
+                {
+                    _currentSyncTask = syncTask;
+                }
+
                 // Run actual sync (snapshot+manifest+upload)
-                await _syncActionAsync(externalCt);
+                await syncTask;
             }
             finally
             {
@@ -126,6 +176,7 @@
                 lock (_gate)
                 {
                     _syncInProgress = false;
+                    _currentSyncTask = null;
 
                     // If changes happened while syncing, schedule another burst.
                     if (_pendingChangeWhileSyncing)
@@ -175,9 +226,15 @@
 
         public void Dispose()
         {
-            if (_disposed) return;
-            _disposed = true;
-            CancelTimers();
+            lock (_gate)
+            {
+                if (_disposed)
+                    return;
+
+                _disposed = true;
+                _debounceCts?.Dispose();
+                _maxWaitCts?.Dispose();
+            }
         }
     }
 }
