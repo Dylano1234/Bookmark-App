@@ -172,7 +172,18 @@
                     Foreground="White"
                     Background="#444"
                     BorderBrush="#444"
-                    Command="{Binding DeleteListCommand}" />
+                    Command="{Binding DeleteListCommand}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsNewList}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
     </StackPanel>
 </UserControl>
