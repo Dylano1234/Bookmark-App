@@ -508,9 +508,11 @@
                                    Foreground="#AAAAAA"
                                    TextAlignment="Center"
                                    Margin="0,0,0,4"/>
-                                <TextBlock Text="Press 'Upload Image'"
+                                <TextBlock Text="Press 'Choose File' or 'Paste Image' to add an image"
+                                           MaxWidth="100"
                                    Foreground="#777"
                                    FontSize="11"
+                                   TextWrapping="Wrap"
                                    TextAlignment="Center"/>
                             </StackPanel>
                         </Grid>
@@ -518,7 +520,7 @@
 
                     <!-- Upload-knop -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
-                        <Button Content="Upload Image"
+                        <Button Content="Choose File"
                                 Command="{Binding SelectImageCommand}"
                                 Padding="12,2"
                                 HorizontalAlignment="Center"
@@ -536,45 +538,7 @@
                                 BorderBrush="#444"
                                 Height="23"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
-                        <Grid>
-                            <TextBox x:Name="ImageLinkTextBox" Width="115"
-                                     Height="23"
-                                     Margin="0,0,10,0"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Right"
-                                     FontSize="16"
-                                     Foreground="White"
-                                     Background="#444"
-                                     BorderBrush="#333"
-                                     Text="{Binding ImageLink, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            </TextBox>
-                            <TextBlock Text="Paste image link here"
-                                       Foreground="Gray"
-                                       Margin="5,3,0,5"
-                                       IsHitTestVisible="False"
-                                       FontSize="11">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=ImageLinkTextBox}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                        <Button Content="Fetch Image"
-                                Height="23"
-                                Command="{Binding FetchImageCommand}"
-                                HorizontalAlignment="Center"
-                                Foreground="White"
-                                Background="#444"
-                                BorderBrush="#444"
-                                Padding="12,2"/>
-                    </StackPanel>
+                    
                     <Button Content="Paste Image"
                             Command="{Binding GetImageFromClipboardCommand}"
                             Padding="12,2"
@@ -586,7 +550,7 @@
                             ToolTip="Get image from clipboard"/>
                 </StackPanel>
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Vertical">
+            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,27,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
                         <TextBlock Text="Genres:"
