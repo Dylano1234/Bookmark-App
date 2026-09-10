@@ -331,7 +331,7 @@ namespace Bookmark_App.ViewModels
             }
             if (IsLoggedIn)
             {
-                await CheckSyncConfilct();
+                await CheckSyncConflict();
             }
         }
         private async Task SignInAsync()
@@ -354,7 +354,7 @@ namespace Bookmark_App.ViewModels
 
                 if (IsLoggedIn)
                 {
-                    await CheckSyncConfilct();
+                    await CheckSyncConflict();
                 }
             }
             catch (OperationCanceledException)
@@ -454,7 +454,7 @@ namespace Bookmark_App.ViewModels
         {
             IsExitSyncViewOpen = false;
         }
-        private async Task CheckSyncConfilct()
+        private async Task CheckSyncConflict()
         {
             try
             {
