@@ -154,6 +154,9 @@ SELECT
     i.rating,
     i.url,
     i.cover_image,
+    i.release_schedule,
+    i.increment_amount,
+    i.increment_limit,
     g.id   AS genre_id,
     g.name AS genre_name
 FROM items i
@@ -195,6 +198,9 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                         rating = reader2.IsDBNull(5) ? 0.0 : reader2.GetDouble(5),
                         url = reader2.IsDBNull(6) ? null : reader2.GetString(6),
                         coverImage = reader2.IsDBNull(7) ? null : (byte[])reader2["cover_image"],
+                        ReleaseSchedule = reader2.IsDBNull(8) ? null : reader2.GetString(8),
+                        IncrementAmount = reader2.IsDBNull(9) ? null : reader2.GetDouble(9),
+                        IncrementLimit = reader2.IsDBNull(10) ? null : reader2.GetDouble(10),
                     };
 
                     itemsById[itemId] = item;
@@ -202,12 +208,12 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                 }
 
                 // Add genre if this row has one
-                if (!reader2.IsDBNull(8))
+                if (!reader2.IsDBNull(11))
                 {
                     var genre = new Genre
                     {
-                        id = reader2.GetInt32(8),
-                        name = reader2.GetString(9)
+                        id = reader2.GetInt32(11),
+                        name = reader2.GetString(12)
                     };
 
                     item.genres.Add(genre);
@@ -301,24 +307,30 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                 {
                     updCmd.Transaction = transaction;
                     updCmd.CommandText = @"
-                                        UPDATE items
-                                        SET title = $title,
-                                            status = $status,
-                                            progress_current = $progressCurrent,
-                                            progress_max = $progressMax,
-                                            rating = $rating,
-                                            url = $url,
-                                            cover_image = $coverImage
-                                        WHERE id = $itemId;
-                                        ";
+        UPDATE items
+        SET title = $title,
+            status = $status,
+            progress_current = $progressCurrent,
+            progress_max = $progressMax,
+            rating = $rating,
+            url = $url,
+            cover_image = $coverImage,
+            release_schedule = $releaseSchedule,
+            increment_amount = $incrementAmount,
+            increment_limit = $incrementLimit
+        WHERE id = $itemId;
+        ";
+
                     updCmd.Parameters.AddWithValue("$title", (object?)listItem.title ?? DBNull.Value);
                     updCmd.Parameters.AddWithValue("$status", (int)listItem.status);
                     updCmd.Parameters.AddWithValue("$progressCurrent", listItem.progressCurrent);
-                    // allow NULL for progress_max if the model uses a sentinel — store value directly
                     updCmd.Parameters.AddWithValue("$progressMax", listItem.progressMax);
                     updCmd.Parameters.AddWithValue("$rating", listItem.rating);
                     updCmd.Parameters.AddWithValue("$url", (object?)listItem.url ?? DBNull.Value);
                     updCmd.Parameters.AddWithValue("$coverImage", (object?)listItem.coverImage ?? DBNull.Value);
+                    updCmd.Parameters.AddWithValue("$releaseSchedule", (object?)listItem.ReleaseSchedule ?? DBNull.Value);
+                    updCmd.Parameters.AddWithValue("$incrementAmount", (object?)listItem.IncrementAmount ?? DBNull.Value);
+                    updCmd.Parameters.AddWithValue("$incrementLimit", (object?)listItem.IncrementLimit ?? DBNull.Value);
                     updCmd.Parameters.AddWithValue("$itemId", listItem.id);
 
                     updCmd.ExecuteNonQuery();
@@ -381,10 +393,34 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                 {
                     cmd.Transaction = transaction;
                     cmd.CommandText = @"
-INSERT INTO items (list_id, title, status, progress_current, progress_max, rating, url, cover_image)
-VALUES ($listId, $title, $status, $progressCurrent, $progressMax, $rating, $url, $coverImage);
-SELECT last_insert_rowid();
-";
+                                        INSERT INTO items (
+                                            list_id,
+                                            title,
+                                            status,
+                                            progress_current,
+                                            progress_max,
+                                            rating,
+                                            url,
+                                            cover_image,
+                                            release_schedule,
+                                            increment_amount,
+                                            increment_limit
+                                        )
+                                        VALUES (
+                                            $listId,
+                                            $title,
+                                            $status,
+                                            $progressCurrent,
+                                            $progressMax,
+                                            $rating,
+                                            $url,
+                                            $coverImage,
+                                            $releaseSchedule,
+                                            $incrementAmount,
+                                            $incrementLimit
+                                        );
+                                        SELECT last_insert_rowid();
+                                        ";
                     cmd.Parameters.AddWithValue("$listId", listId);
                     cmd.Parameters.AddWithValue("$title", (object?)listItem.title ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("$status", (int)listItem.status);
@@ -393,6 +429,9 @@ SELECT last_insert_rowid();
                     cmd.Parameters.AddWithValue("$rating", (object?)listItem.rating ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("$url", (object?)listItem.url ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("$coverImage", (object?)listItem.coverImage ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("$releaseSchedule", (object?)listItem.ReleaseSchedule ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("$incrementAmount", (object?)listItem.IncrementAmount ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("$incrementLimit", (object?)listItem.IncrementLimit ?? DBNull.Value);
 
                     var newId = (long)cmd.ExecuteScalar();
                     listItem.id = (int)newId;

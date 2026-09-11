@@ -92,6 +92,42 @@ namespace Bookmark_App.Models
             }
         }
 
+        private string? _releaseSchedule;
+        public string? ReleaseSchedule
+        {
+            get => _releaseSchedule;
+            set
+            {
+                if (_releaseSchedule == value) return;
+                _releaseSchedule = value;
+                OnPropertyChanged(nameof(ReleaseSchedule));
+            }
+        }
+
+        private double? _incrementLimit;
+        public double? IncrementLimit
+        {
+            get => _incrementLimit;
+            set
+            {
+                if (_incrementLimit == value) return;
+                _incrementLimit = value;
+                OnPropertyChanged(nameof(IncrementLimit));
+            }
+        }
+
+        private double? _incrementAmount;
+        public double? IncrementAmount
+        {
+            get => _incrementAmount;
+            set
+            {
+                if (_incrementAmount == value) return;
+                _incrementAmount = value;
+                OnPropertyChanged(nameof(IncrementAmount));
+            }
+        }
+
         public ListItem(int id, string title, string url, byte[] coverImage, ItemStatus status, double progressCurrent, double progressMax, double rating, List<Genre> genres)
         {
             this.id = id;
