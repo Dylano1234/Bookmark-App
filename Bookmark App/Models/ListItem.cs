@@ -23,8 +23,8 @@ namespace Bookmark_App.Models
         public ItemStatus status { get; set; }
 
         // use backing fields so we can react to changes
-        private double _progressCurrent;
-        public double progressCurrent
+        private decimal _progressCurrent;
+        public decimal progressCurrent
         {
             get => _progressCurrent;
             set
@@ -36,8 +36,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private double _progressMax;
-        public double progressMax
+        private decimal _progressMax;
+        public decimal progressMax
         {
             get => _progressMax;
             set
@@ -49,7 +49,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        public double? rating { get; set; }
+        public decimal? rating { get; set; }
 
         // ObservableCollection so changes after construction are observed
         private ObservableCollection<Genre> _genres = new ObservableCollection<Genre>();
@@ -104,8 +104,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private double? _incrementLimit;
-        public double? IncrementLimit
+        private decimal? _incrementLimit;
+        public decimal? IncrementLimit
         {
             get => _incrementLimit;
             set
@@ -116,8 +116,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private double? _incrementAmount;
-        public double? IncrementAmount
+        private decimal? _incrementAmount;
+        public decimal? IncrementAmount
         {
             get => _incrementAmount;
             set
@@ -128,7 +128,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        public ListItem(int id, string title, string url, byte[] coverImage, ItemStatus status, double progressCurrent, double progressMax, double rating, List<Genre> genres)
+        public ListItem(int id, string title, string url, byte[] coverImage, ItemStatus status, decimal progressCurrent, decimal progressMax, decimal rating, List<Genre> genres)
         {
             this.id = id;
             this.title = title;

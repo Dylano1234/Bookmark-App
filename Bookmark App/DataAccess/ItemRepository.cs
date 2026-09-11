@@ -2,6 +2,7 @@
 using Bookmark_App.Models;
 using Microsoft.Data.Sqlite;
 using System.Text;
+using System.Globalization;
 
 namespace Bookmark_App.DataAccess
 {
@@ -193,19 +194,19 @@ LEFT JOIN genres g       ON g.id = ig.genre_id
                         id = itemId,
                         title = reader2.IsDBNull(1) ? null : reader2.GetString(1),
                         status = (ItemStatus)reader2.GetInt32(2),
-                        progressCurrent = reader2.IsDBNull(3) ? 0.0 : reader2.GetDouble(3),
-                        progressMax = reader2.IsDBNull(4) ? 0.0 : reader2.GetDouble(4),
-                        rating = reader2.IsDBNull(5) ? 0.0 : reader2.GetDouble(5),
+                        progressCurrent = reader2.IsDBNull(3) ? 0m : Convert.ToDecimal(reader2.GetValue(3), CultureInfo.InvariantCulture), 
+                        progressMax = reader2.IsDBNull(4) ? 0m : Convert.ToDecimal(reader2.GetValue(4), CultureInfo.InvariantCulture),
+                        rating = reader2.IsDBNull(5) ? 0m : Convert.ToDecimal(reader2.GetValue(5), CultureInfo.InvariantCulture),
                         url = reader2.IsDBNull(6) ? null : reader2.GetString(6),
                         coverImage = reader2.IsDBNull(7) ? null : (byte[])reader2["cover_image"],
                         ReleaseSchedule = reader2.IsDBNull(8) ? null : reader2.GetString(8),
-                        IncrementAmount = reader2.IsDBNull(9) ? null : reader2.GetDouble(9),
-                        IncrementLimit = reader2.IsDBNull(10) ? null : reader2.GetDouble(10),
+                        IncrementAmount = reader2.IsDBNull(9) ? null : Convert.ToDecimal(reader2.GetValue(9), CultureInfo.InvariantCulture),
+                        IncrementLimit = reader2.IsDBNull(10) ? null : Convert.ToDecimal(reader2.GetValue(10), CultureInfo.InvariantCulture),
                     };
 
                     itemsById[itemId] = item;
                     result.Add(item);
-                }
+                    }
 
                 // Add genre if this row has one
                 if (!reader2.IsDBNull(11))
