@@ -143,7 +143,7 @@ namespace Bookmark_App.ViewModels
             
             // Initialize the debounce timer for filtering
             _filterDebounceTimer = new DispatcherTimer();
-            _filterDebounceTimer.Interval = TimeSpan.FromSeconds(1);
+            _filterDebounceTimer.Interval = TimeSpan.FromMilliseconds(500);
             _filterDebounceTimer.Tick += FilterDebounceTimer_Tick;
 
             SetStatusCommand = new RelayCommand<ItemStatus>(SetStatus);
