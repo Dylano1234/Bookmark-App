@@ -289,7 +289,6 @@ namespace Bookmark_App.ViewModels
                 listVM.LoadItems(listVM._list, listVM.SelectedGenreSortOption, listVM.SelectedSortingOption, listVM.FilteringTitle, listVM.Status, listVM.ItemsPerPage, (int)listVM.CurrentPage);
             }
             ListItemDetailViewModel.ResetGenres();
-            ListItemDetailViewModel.ImageLink = string.Empty;
         }
         private void OpenEditList(Models.List currentList)
         {
@@ -332,7 +331,7 @@ namespace Bookmark_App.ViewModels
             }
             if (IsLoggedIn)
             {
-                await CheckSyncConfilct();
+                await CheckSyncConflict();
             }
         }
         private async Task SignInAsync()
@@ -355,7 +354,7 @@ namespace Bookmark_App.ViewModels
 
                 if (IsLoggedIn)
                 {
-                    await CheckSyncConfilct();
+                    await CheckSyncConflict();
                 }
             }
             catch (OperationCanceledException)
@@ -455,7 +454,7 @@ namespace Bookmark_App.ViewModels
         {
             IsExitSyncViewOpen = false;
         }
-        private async Task CheckSyncConfilct()
+        private async Task CheckSyncConflict()
         {
             try
             {

@@ -171,7 +171,7 @@
                                    Foreground="White"/>
                     </Border>
                     <TextBlock Text="Rating:"
-                   Foreground="White"/>
+                               Foreground="White"/>
                     <Border Width="130"
                             Height="18"
                             Background="#1f1f1f"
@@ -179,6 +179,30 @@
                             Margin="0,0,0,10">
                         <TextBlock Width="125"
                                    Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Increment Amount:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   Text="{Binding CurrentListItem.IncrementAmount, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Release Schedule:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   Text="{Binding CurrentListItem.ReleaseSchedule, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,0,0,0"
                                    Foreground="White"/>
                     </Border>
@@ -220,6 +244,18 @@
                             Margin="0,0,0,10">
                         <TextBlock Width="130"
                                    Text="{Binding CurrentListItem.status, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Increment Limit:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="130"
+                                   Text="{Binding CurrentListItem.IncrementLimit, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,0,0,0"
                                    Foreground="White"/>
                     </Border>
@@ -427,6 +463,44 @@
                              Foreground="White"
                              Background="#444"
                              BorderBrush="#333"/>
+                    <TextBlock Text="Increment Amount:"
+                               Foreground="White"
+                               ToolTip="Amount added to progress each time you press +. Example: 0.5 gives 1 → 1.5 → 2."/>
+                    <TextBox Width="130"
+                             Text="{Binding CurrentListItem.IncrementAmount, UpdateSourceTrigger=LostFocus}" 
+                             Margin="0,0,0,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"
+                             ToolTip="Amount added to progress each time you press +. Example: 0.5 gives 1 → 1.5 → 2."/>
+                    <TextBlock Text="Release Schedule:"
+                               Foreground="White"
+                               ToolTip="Small text that appear above the progress."/>
+                    <Grid>
+                        <TextBox Width="130" Name="ScheduleTextBox"
+                                 Text="{Binding CurrentListItem.ReleaseSchedule, UpdateSourceTrigger=LostFocus}" 
+                                 Margin="0,0,0,10"
+                                 Foreground="White"
+                                 Background="#444"
+                                 BorderBrush="#333"
+                                 ToolTip="Small text that appears above the progress."/>
+                        <TextBlock Text="e.g. Wednesday weekly"
+                                   Foreground="Gray"
+                                   Margin="3,0,0,5"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=ScheduleTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                    
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                     <TextBlock Text="Url:"
@@ -450,12 +524,21 @@
                     <TextBlock Text="Status:"
                                Foreground="White"/>
                     <ComboBox Width="130"
-                              Margin="0,0,10,5"
+                              Margin="0,0,10,8"
                               Height="20"
                               Style="{StaticResource FlatComboBox}"
                               SelectedValue="{Binding CurrentListItem.status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Statuses}"/>
-
+                    <TextBlock Text="Increment Limit:"
+                               Foreground="White"
+                               ToolTip="Highest allowed decimal before wrapping to the next number. Example: 0.2 gives 1.1 → 1.2 → 2.1."/>
+                    <TextBox Width="130"
+                             Text="{Binding CurrentListItem.IncrementLimit, UpdateSourceTrigger=LostFocus}" 
+                             Margin="0,0,10,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"
+                             ToolTip="Highest allowed decimal before wrapping to the next number. Example: 0.2 gives 1.1 → 1.2 → 2.1."/>
 
                 </StackPanel>
                 <!-- Rechter kant: uploadvak -->
@@ -508,9 +591,11 @@
                                    Foreground="#AAAAAA"
                                    TextAlignment="Center"
                                    Margin="0,0,0,4"/>
-                                <TextBlock Text="Press 'Upload Image'"
+                                <TextBlock Text="Press 'Choose File' or 'Paste Image' to add an image"
+                                           MaxWidth="100"
                                    Foreground="#777"
                                    FontSize="11"
+                                   TextWrapping="Wrap"
                                    TextAlignment="Center"/>
                             </StackPanel>
                         </Grid>
@@ -518,7 +603,7 @@
 
                     <!-- Upload-knop -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
-                        <Button Content="Upload Image"
+                        <Button Content="Choose File"
                                 Command="{Binding SelectImageCommand}"
                                 Padding="12,2"
                                 HorizontalAlignment="Center"
@@ -536,45 +621,7 @@
                                 BorderBrush="#444"
                                 Height="23"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Height="23">
-                        <Grid>
-                            <TextBox x:Name="ImageLinkTextBox" Width="115"
-                                     Height="23"
-                                     Margin="0,0,10,0"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Right"
-                                     FontSize="16"
-                                     Foreground="White"
-                                     Background="#444"
-                                     BorderBrush="#333"
-                                     Text="{Binding ImageLink, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            </TextBox>
-                            <TextBlock Text="Paste image link here"
-                                       Foreground="Gray"
-                                       Margin="5,3,0,5"
-                                       IsHitTestVisible="False"
-                                       FontSize="11">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=ImageLinkTextBox}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                        <Button Content="Fetch Image"
-                                Height="23"
-                                Command="{Binding FetchImageCommand}"
-                                HorizontalAlignment="Center"
-                                Foreground="White"
-                                Background="#444"
-                                BorderBrush="#444"
-                                Padding="12,2"/>
-                    </StackPanel>
+                    
                     <Button Content="Paste Image"
                             Command="{Binding GetImageFromClipboardCommand}"
                             Padding="12,2"
@@ -586,7 +633,7 @@
                             ToolTip="Get image from clipboard"/>
                 </StackPanel>
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Vertical">
+            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,27,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
                         <TextBlock Text="Genres:"

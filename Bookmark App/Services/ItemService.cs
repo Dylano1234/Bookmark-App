@@ -102,6 +102,24 @@ namespace Bookmark_App.Services
                 errorMessage += "- Duplicate genres selected.\n";
             }
 
+            // Validate increment limit: required, 0.0 through 0.9, maximum one decimal place
+            if (!item.IncrementLimit.HasValue ||
+                item.IncrementLimit.Value < 0.0m ||
+                item.IncrementLimit.Value > 0.9m ||
+                item.IncrementLimit.Value != decimal.Round(item.IncrementLimit.Value, 1))
+            {
+                errorMessage += "- Increment limit must be between 0.0 and 0.9 with a maximum of one decimal place.\n";
+            }
+
+            // Validate increment amount: required, 0.1 through 1.0, maximum one decimal place
+            if (!item.IncrementAmount.HasValue ||
+                item.IncrementAmount.Value < 0.1m ||
+                item.IncrementAmount.Value > 1.0m ||
+                item.IncrementAmount.Value != decimal.Round(item.IncrementAmount.Value, 1))
+            {
+                errorMessage += "- Increment amount must be between 0.1 and 1.0 with a maximum of one decimal place.\n";
+            }
+
             return errorMessage;
         }
     }

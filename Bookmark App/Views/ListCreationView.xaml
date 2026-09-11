@@ -74,7 +74,9 @@
                                        Foreground="#AAAAAA"
                                        TextAlignment="Center"
                                        Margin="0,0,0,4"/>
-                            <TextBlock Text="Press 'Upload Image'"
+                            <TextBlock Text="Press 'Choose File' or 'Paste Image' to add an image"
+                                       MaxWidth="180"
+                                       TextWrapping="Wrap"
                                        Foreground="#777"
                                        FontSize="11"
                                        TextAlignment="Center"/>
@@ -86,9 +88,9 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="0,0,0,5">
-                    <Button Content="Upload Image"
+                    <Button Content="Choose File"
                             Command="{Binding SelectImageCommand}"
-                            Padding="12,4"
+                            Padding="19,4"
                             HorizontalAlignment="Center"
                             Margin="0,0,10,0"
                             Foreground="White"
@@ -102,44 +104,7 @@
                             Background="#444"
                             BorderBrush="#444"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="0,0,0,5">
-                    <Grid>
-                        <TextBox x:Name="ImageLinkTextBox" Width="126"
-                                 Height="30"
-                                 Margin="0,5,10,5"
-                                 VerticalAlignment="Center"
-                                 HorizontalAlignment="Right"
-                                 FontSize="16"
-                                 Foreground="White"
-                                 Background="#444"
-                                 BorderBrush="#333"
-                                 Text="{Binding ImageLink, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        </TextBox>
-                        <TextBlock Text="Paste image link here"
-                                   Foreground="Gray"
-                                   Margin="5,10,0,5"
-                                   IsHitTestVisible="False">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=ImageLinkTextBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                    <Button Content="Fetch Image"
-                            Height="30"
-                            Command="{Binding FetchImageCommand}"
-                            Width="80"
-                            HorizontalAlignment="Center"
-                            Foreground="White"
-                            Background="#444"
-                            BorderBrush="#444"/>
-                </StackPanel>
+                
                 <Button Content="Paste Image"
                         Command="{Binding GetImageFromClipboardCommand}"
                         Padding="12,2"
@@ -149,7 +114,7 @@
                         BorderBrush="#444"
                         Height="30"
                         ToolTip="Get image from clipboard"
-                        Margin="0,0,22,50"/>
+                        Margin="0,0,23,77"/>
             </StackPanel>
         </Grid>
 

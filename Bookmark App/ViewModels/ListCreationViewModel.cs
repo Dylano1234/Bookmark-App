@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System.IO;
-using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -55,20 +54,12 @@ namespace Bookmark_App.ViewModels
             set => SetProperty(ref _coverPreview, value);
         }
 
-        private string _imageLink;
-        public string ImageLink
-        {
-            get => _imageLink;
-            set => SetProperty(ref _imageLink, value);
-        }
-
         public MainViewModel MainViewModel { get; }
 
         public ICommand SelectImageCommand { get; }
         public ICommand SaveListCommand { get; }
         public ICommand DeleteListCommand { get; }
         public ICommand RemoveImageCommand { get; }
-        public ICommand FetchImageCommand { get;  }
         public ICommand GetImageFromClipboardCommand { get; }
 
         public ListCreationViewModel(MainViewModel mainViewModel)
@@ -77,7 +68,6 @@ namespace Bookmark_App.ViewModels
             SaveListCommand = new RelayCommand(SaveList);
             DeleteListCommand = new RelayCommand(DeleteList);
             RemoveImageCommand = new RelayCommand(RemoveImage);
-            FetchImageCommand = new RelayCommand(FetchImage);
             GetImageFromClipboardCommand = new RelayCommand(GetImageFromClipboard);
             MainViewModel = mainViewModel;
         }
@@ -86,8 +76,8 @@ namespace Bookmark_App.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title = "Kies een omslagafbeelding",
-                Filter = "Afbeeldingen|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Choose a cover image",
+                Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
                 Multiselect = false
             };
 
@@ -122,7 +112,6 @@ namespace Bookmark_App.ViewModels
             ListTitle = string.Empty;
             CoverImageData = null;
             CoverPreview = null;
-            ImageLink = string.Empty;
             MainViewModel.CloseCreateList();
             MainViewModel.LoadLists();
         }
@@ -145,7 +134,6 @@ namespace Bookmark_App.ViewModels
             ListTitle = string.Empty;
             CoverImageData = null;
             CoverPreview = null;
-            ImageLink = string.Empty;
             MainViewModel.CloseCreateList();
             MainViewModel.LoadLists();
         }
@@ -153,36 +141,6 @@ namespace Bookmark_App.ViewModels
         {
             CoverImageData = null;
             CoverPreview = null;
-        }
-        private async void FetchImage()
-        {
-            if (!(ImageLink == null || ImageLink == ""))
-            {
-                try
-                {
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-                        httpClient.DefaultRequestHeaders.Add("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
-                        httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-                        httpClient.Timeout = TimeSpan.FromSeconds(10);
-
-                        var imageData = await httpClient.GetByteArrayAsync(ImageLink);
-                        CoverImageData = imageData;
-                        CoverPreview = imageData;
-                        if (CurrentList != null)
-                            CurrentList.coverImage = CoverImageData;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Invalid Image URL", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
         private void GetImageFromClipboard()
         {

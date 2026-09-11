@@ -143,7 +143,7 @@ namespace Bookmark_App.ViewModels
             
             // Initialize the debounce timer for filtering
             _filterDebounceTimer = new DispatcherTimer();
-            _filterDebounceTimer.Interval = TimeSpan.FromSeconds(1);
+            _filterDebounceTimer.Interval = TimeSpan.FromMilliseconds(500);
             _filterDebounceTimer.Tick += FilterDebounceTimer_Tick;
 
             SetStatusCommand = new RelayCommand<ItemStatus>(SetStatus);
@@ -291,19 +291,34 @@ namespace Bookmark_App.ViewModels
         }
         private void IncrementProgress(Models.ListItem item)
         {
-            if (item.progressCurrent < item.progressMax)
+
+            decimal next = (decimal)item.progressCurrent + (decimal)item.IncrementAmount;
+            decimal nextFraction = next - Math.Floor(next);
+
+            // If the next decimal would exceed the configured limit,
+            // move to the next whole number and start again at the increment amount.
+            if (nextFraction != 0m && nextFraction > item.IncrementLimit)
             {
-                item.progressCurrent++;
-                _itemService.UpdateItem(item);
-                LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+                next = Math.Floor(item.progressCurrent) + 1m + (decimal)item.IncrementAmount;
             }
-            else if (item.progressCurrent == item.progressMax)
+
+            // If we're already caught up, also advance the maximum progress.
+            if (next >= item.progressMax)
             {
-                item.progressCurrent++;
-                item.progressMax++;
-                _itemService.UpdateItem(item);
-                LoadItems(_list, SelectedGenreSortOption, SelectedSortingOption, FilteringTitle, Status, ItemsPerPage, (int)CurrentPage);
+                item.progressMax = next;
             }
+
+            item.progressCurrent = next;
+
+            _itemService.UpdateItem(item);
+            LoadItems(
+                _list,
+                SelectedGenreSortOption,
+                SelectedSortingOption,
+                FilteringTitle,
+                Status,
+                ItemsPerPage,
+                (int)CurrentPage);
         }
     }
 }

@@ -5,8 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -58,13 +56,6 @@ namespace Bookmark_App.ViewModels
             ItemStatus.Planning
         };
 
-        private string _imageLink;
-        public string ImageLink
-        {
-            get => _imageLink;
-            set => SetProperty(ref _imageLink, value);
-        }
-
         private Genre? _genre1;
         public Genre? Genre1
         {
@@ -113,7 +104,6 @@ namespace Bookmark_App.ViewModels
         public ICommand SelectImageCommand { get; }
         public ICommand DeleteListItemCommand { get; }
         public ICommand RemoveImageCommand { get; }
-        public ICommand FetchImageCommand { get;  }
         public ICommand GetImageFromClipboardCommand { get;  }
 
         private readonly Services.ItemService _itemService;
@@ -127,7 +117,6 @@ namespace Bookmark_App.ViewModels
             SelectImageCommand = new RelayCommand(SelectImage);
             DeleteListItemCommand = new RelayCommand(DeleteListItem);
             RemoveImageCommand = new RelayCommand(RemoveImage);
-            FetchImageCommand = new RelayCommand(FetchImage);
             GetImageFromClipboardCommand = new RelayCommand(GetImageFromClipboard);
 
             MainViewModel = mainViewModel;
@@ -204,7 +193,6 @@ namespace Bookmark_App.ViewModels
 
             MainViewModel.CloseListItemDetailView();
             ResetGenres();
-            ImageLink = string.Empty;
         }
         private void DeleteListItem()
         {
@@ -224,15 +212,14 @@ namespace Bookmark_App.ViewModels
 
                 _itemService.DeleteItem(CurrentListItem);
                 MainViewModel.CloseListItemDetailView();
-                ImageLink = string.Empty;
             }
         }
         private void SelectImage()
         {
             var dlg = new OpenFileDialog
             {
-                Title = "Kies een omslagafbeelding",
-                Filter = "Afbeeldingen|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Choose a cover image",
+                Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
                 Multiselect = false
             };
 
@@ -279,35 +266,6 @@ namespace Bookmark_App.ViewModels
             if (CurrentListItem != null)
             {
                 CurrentListItem.coverImage = null;
-            }
-        }
-        private async void FetchImage()
-        {
-            if(!(ImageLink == null || ImageLink == ""))
-            {
-                try
-                {
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-                        httpClient.DefaultRequestHeaders.Add("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
-                        httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-                        httpClient.Timeout = TimeSpan.FromSeconds(10);
-
-                        var imageData = await httpClient.GetByteArrayAsync(ImageLink);
-                        CoverImageData = imageData;
-                        if (CurrentListItem != null)
-                            CurrentListItem.coverImage = CoverImageData;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Invalid Image URL", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please provide an image URL before submitting.", "No URL Provided", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void GetImageFromClipboard()

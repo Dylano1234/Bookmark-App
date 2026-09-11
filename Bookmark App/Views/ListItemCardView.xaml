@@ -47,6 +47,7 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
+        
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -171,8 +172,8 @@
                         <ColumnDefinition Width="15*"/>
                         <ColumnDefinition Width="20*"/>
                     </Grid.ColumnDefinitions>
-
-                    <!-- Rating in cirkel: '2/10' -->
+                    
+                    <!-- Rating-->
                     <Border Width="70"
                             Height="70"
                             CornerRadius="40"
@@ -202,15 +203,25 @@
                             </TextBlock>
                         </Viewbox>
                     </Border>
-
+                    <TextBlock Text="{Binding ReleaseSchedule}"
+                               Foreground="#BBBBBB"
+                               FontSize="12"
+                               TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               MaxWidth="150"
+                               Margin="35,0,0,0"/>
                     <!-- Progress -->
                     <Viewbox Stretch="Uniform" StretchDirection="UpOnly"
                              Grid.Column="1">
                         <StackPanel VerticalAlignment="Center"
-                                Margin="20,0,10,0">
+                                Margin="20,2,5,0">
                             <TextBlock Text="Progress:"
+                                       Margin="0,5,0,0"
                                    Foreground="White"
-                                   FontSize="18"
+                                   FontSize="16"
                                    HorizontalAlignment="Left"/>
                             <Viewbox Stretch="Uniform" StretchDirection="Both"> 
                                 <StackPanel Orientation="Horizontal"
@@ -218,19 +229,19 @@
                                      HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding ProgressText}"  
                                            Foreground="White"
-                                           FontSize="18"
+                                           FontSize="16"
                                            VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Viewbox>
                         </StackPanel>
                     </Viewbox>
-                    <!-- '+' knop -->
+                    <!-- '+' button -->
                     <Button Content="+" Grid.Column="2"
                             Width="32"
                             Height="32"
                             Command="{Binding DataContext.IncrementProgressCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ListView}}}"
                             CommandParameter="{Binding}"
-                            Margin="4,32,0,0"
+                            Margin="0,52,0,0"
                             Background="#3A3A3A"
                             Foreground="White"
                             BorderBrush="#707070"

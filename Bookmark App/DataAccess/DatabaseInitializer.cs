@@ -12,6 +12,7 @@ namespace Bookmark_App.DataAccess
 
             CreateTables(connection);
             SeedGenres(connection);
+            MigrateDatabase(connection);
         }
 
         private static void CreateTables(SqliteConnection connection)
@@ -34,6 +35,9 @@ CREATE TABLE IF NOT EXISTS items (
     rating           DECIMAL(3,1),
     url              TEXT,
     cover_image      BLOB,
+    release_schedule TEXT,
+    increment_amount DECIMAL(2,1) NOT NULL DEFAULT 1.0,
+    increment_limit  DECIMAL(2,1) NOT NULL DEFAULT 0.0,
     FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
 
@@ -76,6 +80,60 @@ CREATE TABLE IF NOT EXISTS item_genres (
             {
                 nameParam.Value = g;
                 insertCmd.ExecuteNonQuery();
+            }
+        }
+
+        private static bool ColumnExists(SqliteConnection connection, string table, string column)
+        {
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"PRAGMA table_info({table});";
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                if (reader.GetString(1)
+                    .Equals(column, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void MigrateDatabase(SqliteConnection connection)
+        {
+            if (!ColumnExists(connection, "items", "release_schedule"))
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText =
+                    "ALTER TABLE items ADD COLUMN release_schedule TEXT;";
+                cmd.ExecuteNonQuery();
+            }
+
+            if (!ColumnExists(connection, "items", "increment_amount"))
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText =
+                    """
+            ALTER TABLE items
+            ADD COLUMN increment_amount DECIMAL(2,1)
+            NOT NULL DEFAULT 1.0;
+            """;
+                cmd.ExecuteNonQuery();
+            }
+
+            if (!ColumnExists(connection, "items", "increment_limit"))
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText =
+                    """
+            ALTER TABLE items
+            ADD COLUMN increment_limit DECIMAL(2,1)
+            NOT NULL DEFAULT 0.0;
+            """;
+                cmd.ExecuteNonQuery();
             }
         }
     }

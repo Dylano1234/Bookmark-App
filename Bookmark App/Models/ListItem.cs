@@ -23,8 +23,8 @@ namespace Bookmark_App.Models
         public ItemStatus status { get; set; }
 
         // use backing fields so we can react to changes
-        private double _progressCurrent;
-        public double progressCurrent
+        private decimal _progressCurrent;
+        public decimal progressCurrent
         {
             get => _progressCurrent;
             set
@@ -36,8 +36,8 @@ namespace Bookmark_App.Models
             }
         }
 
-        private double _progressMax;
-        public double progressMax
+        private decimal _progressMax;
+        public decimal progressMax
         {
             get => _progressMax;
             set
@@ -49,7 +49,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        public double? rating { get; set; }
+        public decimal? rating { get; set; }
 
         // ObservableCollection so changes after construction are observed
         private ObservableCollection<Genre> _genres = new ObservableCollection<Genre>();
@@ -92,7 +92,43 @@ namespace Bookmark_App.Models
             }
         }
 
-        public ListItem(int id, string title, string url, byte[] coverImage, ItemStatus status, double progressCurrent, double progressMax, double rating, List<Genre> genres)
+        private string? _releaseSchedule;
+        public string? ReleaseSchedule
+        {
+            get => _releaseSchedule;
+            set
+            {
+                if (_releaseSchedule == value) return;
+                _releaseSchedule = value;
+                OnPropertyChanged(nameof(ReleaseSchedule));
+            }
+        }
+
+        private decimal? _incrementLimit = 0.0m;
+        public decimal? IncrementLimit
+        {
+            get => _incrementLimit;
+            set
+            {
+                if (_incrementLimit == value) return;
+                _incrementLimit = value;
+                OnPropertyChanged(nameof(IncrementLimit));
+            }
+        }
+
+        private decimal? _incrementAmount = 1.0m;
+        public decimal? IncrementAmount
+        {
+            get => _incrementAmount;
+            set
+            {
+                if (_incrementAmount == value) return;
+                _incrementAmount = value;
+                OnPropertyChanged(nameof(IncrementAmount));
+            }
+        }
+
+        public ListItem(int id, string title, string url, byte[] coverImage, ItemStatus status, decimal progressCurrent, decimal progressMax, decimal rating, List<Genre> genres)
         {
             this.id = id;
             this.title = title;
