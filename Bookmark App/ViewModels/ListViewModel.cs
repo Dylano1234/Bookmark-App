@@ -291,8 +291,6 @@ namespace Bookmark_App.ViewModels
         }
         private void IncrementProgress(Models.ListItem item)
         {
-            if (item.progressCurrent > item.progressMax)
-                return;
 
             decimal next = (decimal)item.progressCurrent + (decimal)item.IncrementAmount;
             decimal nextFraction = next - Math.Floor(next);
@@ -305,7 +303,7 @@ namespace Bookmark_App.ViewModels
             }
 
             // If we're already caught up, also advance the maximum progress.
-            if (item.progressCurrent >= item.progressMax)
+            if (next >= item.progressMax)
             {
                 item.progressMax = next;
             }
