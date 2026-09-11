@@ -305,7 +305,7 @@ namespace Bookmark_App.ViewModels
             }
 
             // If we're already caught up, also advance the maximum progress.
-            if (item.progressCurrent == item.progressMax)
+            if (item.progressCurrent >= item.progressMax)
             {
                 item.progressMax = next;
             }

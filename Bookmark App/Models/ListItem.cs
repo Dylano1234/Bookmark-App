@@ -104,7 +104,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        private decimal? _incrementLimit;
+        private decimal? _incrementLimit = 0.0m;
         public decimal? IncrementLimit
         {
             get => _incrementLimit;
@@ -116,7 +116,7 @@ namespace Bookmark_App.Models
             }
         }
 
-        private decimal? _incrementAmount;
+        private decimal? _incrementAmount = 1.0m;
         public decimal? IncrementAmount
         {
             get => _incrementAmount;

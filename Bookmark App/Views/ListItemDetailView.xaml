@@ -171,7 +171,7 @@
                                    Foreground="White"/>
                     </Border>
                     <TextBlock Text="Rating:"
-                   Foreground="White"/>
+                               Foreground="White"/>
                     <Border Width="130"
                             Height="18"
                             Background="#1f1f1f"
@@ -179,6 +179,30 @@
                             Margin="0,0,0,10">
                         <TextBlock Width="125"
                                    Text="{Binding CurrentListItem.rating, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Increment Amount:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   Text="{Binding CurrentListItem.IncrementAmount, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Release Schedule:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="125"
+                                   Text="{Binding CurrentListItem.ReleaseSchedule, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,0,0,0"
                                    Foreground="White"/>
                     </Border>
@@ -220,6 +244,18 @@
                             Margin="0,0,0,10">
                         <TextBlock Width="130"
                                    Text="{Binding CurrentListItem.status, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="3,0,0,0"
+                                   Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Increment Limit:"
+                               Foreground="White"/>
+                    <Border Width="130"
+                            Height="18"
+                            Background="#1f1f1f"
+                            CornerRadius="6"
+                            Margin="0,0,0,10">
+                        <TextBlock Width="130"
+                                   Text="{Binding CurrentListItem.IncrementLimit, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="3,0,0,0"
                                    Foreground="White"/>
                     </Border>
@@ -427,6 +463,44 @@
                              Foreground="White"
                              Background="#444"
                              BorderBrush="#333"/>
+                    <TextBlock Text="Increment Amount:"
+                               Foreground="White"
+                               ToolTip="Amount added to progress each time you press +. Example: 0.5 gives 1 → 1.5 → 2."/>
+                    <TextBox Width="130"
+                             Text="{Binding CurrentListItem.IncrementAmount, UpdateSourceTrigger=LostFocus}" 
+                             Margin="0,0,0,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"
+                             ToolTip="Amount added to progress each time you press +. Example: 0.5 gives 1 → 1.5 → 2."/>
+                    <TextBlock Text="Release Schedule:"
+                               Foreground="White"
+                               ToolTip="Small text that appear above the progress."/>
+                    <Grid>
+                        <TextBox Width="130" Name="ScheduleTextBox"
+                                 Text="{Binding CurrentListItem.ReleaseSchedule, UpdateSourceTrigger=LostFocus}" 
+                                 Margin="0,0,0,10"
+                                 Foreground="White"
+                                 Background="#444"
+                                 BorderBrush="#333"
+                                 ToolTip="Small text that appears above the progress."/>
+                        <TextBlock Text="e.g. Wednesday weekly"
+                                   Foreground="Gray"
+                                   Margin="3,0,0,5"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=ScheduleTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                    
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                     <TextBlock Text="Url:"
@@ -450,12 +524,21 @@
                     <TextBlock Text="Status:"
                                Foreground="White"/>
                     <ComboBox Width="130"
-                              Margin="0,0,10,5"
+                              Margin="0,0,10,8"
                               Height="20"
                               Style="{StaticResource FlatComboBox}"
                               SelectedValue="{Binding CurrentListItem.status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Statuses}"/>
-
+                    <TextBlock Text="Increment Limit:"
+                               Foreground="White"
+                               ToolTip="Highest allowed decimal before wrapping to the next number. Example: 0.2 gives 1.1 → 1.2 → 2.1."/>
+                    <TextBox Width="130"
+                             Text="{Binding CurrentListItem.IncrementLimit, UpdateSourceTrigger=LostFocus}" 
+                             Margin="0,0,10,10"
+                             Foreground="White"
+                             Background="#444"
+                             BorderBrush="#333"
+                             ToolTip="Highest allowed decimal before wrapping to the next number. Example: 0.2 gives 1.1 → 1.2 → 2.1."/>
 
                 </StackPanel>
                 <!-- Rechter kant: uploadvak -->
